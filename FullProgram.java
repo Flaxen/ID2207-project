@@ -11,12 +11,10 @@ class FullProgram {
 
   public static void main(String[] args) {
 
-
     Scanner in = new Scanner(System.in);
-    Staff activeUser;
+    Staff activeUser = null;
 
     boolean run = true;
-
 
     System.out.println("SEP system 1.0:\n");
 
@@ -27,8 +25,6 @@ class FullProgram {
           activeUser = Login.ui(staff);
           break;
 
-
-
         case "logout":
           System.out.println("Logged out");
           activeUser = null;
@@ -37,10 +33,53 @@ class FullProgram {
         case "stop":
           System.out.println("Stopping");
           run = false;
+
+        case "commands":
+          System.out.println(Login.getCommands(activeUser));
+          break;
+
+        case "viewEventRequest":
+          break;
+
+        case "createEventRequest":
+          break;
+
+        case "listEventRequest":
+          break;
+
+        case "approve":
+          break;
+
+        case "reject":
+          break;
+
+        case "listFinancialRequest":
+          break;
+
+        case "updateFinancialRequestStatus":
+          break;
+
+        case "viewBudget":
+          break;
+
+        case "addFeedback":
+          break;
+
+        case "listTasks":
+          break;
+
+        case "viewTask":
+          break;
+
+        case "createTask":
+          break;
+
+        case "createFinancialRequest":
+          break;
+
+        case "createStaffRecruitmentRequest":
+          break;
       }
-
     }
-
   }
-
 }

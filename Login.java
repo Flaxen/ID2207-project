@@ -38,6 +38,36 @@ class Login {
     return user;
   }
 
+  public static String getCommands(Staff staff) {
+    if(staff == null) {
+      return "login, logout, stop, commands";
+    } 
+    
+    switch(staff.getRole()) {
+      case "CustomerService": 
+        return "createEventRequest, logout, stop, commands";
+
+      case "SeniorCustomerService": 
+        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
+
+      case "FinancialManager": 
+        return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, logout, stop, commands";
+      
+      case "ProductionManager": 
+        return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
+      
+      case "ServicelManager": 
+        return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
+      
+      case "AdministrationDepartManager": 
+        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
+        
+      default:
+        return "error: unknown role";
+    }
+  
+  }
+
   public static void main(String[] args) {
 
     Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService"),
