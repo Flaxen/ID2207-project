@@ -3,12 +3,14 @@ import java.util.ArrayList;
 
 class FullProgram {
 
-  static private Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService"),
-                           new Staff("Janet", "scs1", "123", "SeniorCustomerService"),
-                           new Staff("Alice", "fm1", "123", "FinancialManager"),
-                           new Staff("Jack", "pm1", "123", "ProductionManager"),
-                           new Staff("Mike", "am1", "123", "AdministrationManager"),
-                           new Staff("Simon", "hr1", "123", "SeniorHRManager")};
+  static private Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService", "CustomerService"),
+                          new Staff("Janet", "scs1", "123", "SeniorCustomerService", "CustomerService"),
+                          new Staff("Alice", "fm1", "123", "FinancialManager", null),
+                          new Staff("Jack", "pm1", "123", "ProductionManager", null),
+                          new Staff("Mike", "am1", "123", "AdministrationManager", null),
+                          new Staff("Simon", "hr1", "123", "SeniorHRManager", "HRTeam"),
+                          new Staff("Tobias", "ph1", "123", "Photography", "Photography"),
+                          new Staff("Kate", "wh1", "123", "SeniorWaitress", "Waitress")};
 
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
 

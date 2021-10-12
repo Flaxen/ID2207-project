@@ -334,9 +334,9 @@ class EventRequest {
       // Method testing
       // Functions with UI input are tested using Acceptence tests
 
-      Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService"),
-                       new Staff("Janet", "scs1", "123", "SeniorCustomerService"),
-                       new Staff("Alice", "fm1", "123", "FinancialManager")};
+      Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService", "CustomerService"),
+                       new Staff("Janet", "scs1", "123", "SeniorCustomerService", "CustomerService"),
+                       new Staff("Alice", "fm1", "123", "FinancialManager", null)};
 
       ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
 
