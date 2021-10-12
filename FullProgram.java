@@ -13,7 +13,7 @@ class FullProgram {
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
 
   public static void main(String[] args) {
-    Boolean[] b = {false, false, false, false, true};
+    boolean[] b = {false, false, false, false, true};
     eventRequests.add(new EventRequest(1, "Joe", "fika", "bullar och kaffe", "5", "6", "20", "1300", b));
     eventRequests.add(new EventRequest(2, "Emma", "fest", "partykväll", "2", "3", "100", "5000", b));
     eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));

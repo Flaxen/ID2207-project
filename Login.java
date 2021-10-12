@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 class Login {
 
-
   private static Staff login(String username, String password, Staff[] users) {
 
     for(int i = 0; i < users.length; i++) {
@@ -16,7 +15,6 @@ class Login {
           System.out.println("Wrong password");
           return null;
         }
-
       }
     }
     // username not exist
@@ -41,31 +39,31 @@ class Login {
   public static String getCommands(Staff staff) {
     if(staff == null) {
       return "login, logout, stop, commands";
-    } 
-    
+    }
+
     switch(staff.getRole()) {
-      case "CustomerService": 
+      case "CustomerService":
         return "createEventRequest, logout, stop, commands";
 
-      case "SeniorCustomerService": 
+      case "SeniorCustomerService":
         return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
 
-      case "FinancialManager": 
+      case "FinancialManager":
         return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, logout, stop, commands";
-      
-      case "ProductionManager": 
+
+      case "ProductionManager":
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
-      
-      case "ServiceManager": 
+
+      case "ServiceManager":
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
-      
-      case "AdministrationManager": 
+
+      case "AdministrationManager":
         return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
-        
+
       default:
         return "error: unknown role";
     }
-  
+
   }
 
   public static void main(String[] args) {

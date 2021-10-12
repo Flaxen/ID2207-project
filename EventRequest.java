@@ -12,13 +12,13 @@ class EventRequest {
     private String endDate;
     private String expectedNumber;
     private String expectedBudget;
-    private Boolean[] preferencesBool;
+    private boolean[] preferencesBool;
     private String feedback;
     private String status;
     private String[] preferencesText = {"decorations", "parties", "photos/filming", "breakfast,lunch,dinner", "soft/hot drinks"};
 
     EventRequest(int id, String clientName, String type, String description, String startDate,
-    String endDate, String expectedNumber, String expectedBudget, Boolean[] preferencesBool) {
+    String endDate, String expectedNumber, String expectedBudget, boolean[] preferencesBool) {
         this.id = id;
         this.clientName = clientName;
         this.type = type;
@@ -92,8 +92,8 @@ class EventRequest {
     }
 
     static EventRequest creationUI(Staff activeUser, int id) {
-      if(!activeUser.getRole().equals("CustomerService")) {
-        System.out.println("Permission denied");
+      String[] authorizedStaff = {"CustomerService"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
         return null;
       }
 
@@ -104,7 +104,7 @@ class EventRequest {
       String endDate;
       String expectedNumber;
       String expectedBudget;
-      Boolean[] preferencesBool = {false, false, false, false, false};
+      boolean[] preferencesBool = {false, false, false, false, false};
 
       String tempIn;
       Scanner in = new Scanner(System.in);
@@ -167,15 +167,41 @@ class EventRequest {
       }
       System.out.println("EventRequest created");
 
-      // in.close();
-
       return new EventRequest(id, clientName, type, description, startDate, endDate, expectedNumber, expectedBudget, preferencesBool);
     }
 
+    static EventRequest getRequest(ArrayList<EventRequest> eventRequests) {
+      Scanner in = new Scanner(System.in);
+      System.out.print("Enter request Id: ");
+      int id = in.nextInt();
+
+      EventRequest er = null;
+      EventRequest temp = null;
+      for(int i = 0; i < eventRequests.size(); i++) {
+          temp = eventRequests.get(i);
+          if(temp.getId() == id) {
+              er = temp;
+              return er;
+          }
+      }
+      System.out.println("No such event request");
+      return null;
+    }
+
+    static boolean allowedUser(Staff activeUser, String[] authorizedStaff) {
+      for(int i = 0; i < authorizedStaff.length; i++) {
+        if(activeUser.getRole().equals(authorizedStaff[i])) {
+          return true;
+        }
+      }
+      System.out.println("Permission denied");
+      return false;
+    }
+
     static void listEventRequest(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      if(!activeUser.getRole().equals("SeniorCustomerService") && !activeUser.getRole().equals("FinancialManager") &&
-          !activeUser.getRole().equals("AdministrationManager")) {
-        System.out.println("Permission denied");
+
+      String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
         return;
       }
 
@@ -191,26 +217,14 @@ class EventRequest {
 
     static void viewEventRequest(Staff activeUser, ArrayList<EventRequest> eventRequests) {
 
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter request Id: ");
-        int id = in.nextInt();
-
-        if(!activeUser.getRole().equals("SeniorCustomerService") && !activeUser.getRole().equals("FinancialManager") &&
-          !activeUser.getRole().equals("AdministrationManager")) {
-        System.out.println("Permission denied");
+      String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
         return;
       }
 
-      EventRequest er = null;
-      for(int i = 0; i < eventRequests.size(); i++) {
-        er = eventRequests.get(i);
-        if(er.getId() == id) {
-            break;
-        }
-      }
-
+      Scanner in = new Scanner(System.in);
+      EventRequest er = getRequest(eventRequests);
       if(er == null) {
-        System.out.println("No such event request");
         return;
       }
 
@@ -229,99 +243,108 @@ class EventRequest {
     }
 
     static ArrayList<EventRequest> approve(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-        if(!activeUser.getRole().equals("SeniorCustomerService") &&
-          !activeUser.getRole().equals("AdministrationManager")) {
-            System.out.println("Permission denied");
-            return null;
-        }
+      String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
+        return null;
+      }
         return nextChainInCommand(activeUser, eventRequests);
     }
 
     static ArrayList<EventRequest> redirect(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-        if(!activeUser.getRole().equals("FinancialManager")) {
-            System.out.println("Permission denied");
-            return null;
-        }
+      String[] authorizedStaff = {"FinancialManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
+        return null;
+      }
         return nextChainInCommand(activeUser, eventRequests);
     }
 
     static ArrayList<EventRequest> nextChainInCommand(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter request Id: ");
-        int id = in.nextInt();
+      Scanner in = new Scanner(System.in);
 
-        EventRequest er = null;
-        for(int i = 0; i < eventRequests.size(); i++) {
-            er = eventRequests.get(i);
-            if(er.getId() == id) {
-                break;
-            }
-        }
+      EventRequest er = getRequest(eventRequests);
+      if(er == null) {
+        return null;
+      }
 
-        if(er == null) {
-            System.out.println("No such event request");
+      if(activeUser.getRole().equals("SeniorCustomerService")) {
+          er.setStatus("Redirected to Financial Manager");
+          System.out.println("Event request forwarded to Financial Manager");
+      } else if(activeUser.getRole().equals("FinancialManager")) {
+
+        if(er.feedback == null) {
+            System.out.println("No feedback added");
             return null;
         }
+        er.setStatus("Redirected to Administration Manager");
+        System.out.println("Event request forwarded to Administration Manager");
 
-        if(activeUser.getRole().equals("SeniorCustomerService")) {
-            er.setStatus("Redirected to Financial Manager");
-            System.out.println("Event request forwarded to Financial Manager");
-        } else if(activeUser.getRole().equals("FinancialManager")) {
-            if(er.feedback == null) {
-                System.out.println("No feedback added");
-                return null;
-            }
-            er.setStatus("Redirected to Administration Manager");
-            System.out.println("Event request forwarded to Administration Manager");
-        }
-        else {
-            er.setStatus("Approved");
-            System.out.println("Event request approved");
-        }
-        eventRequests.remove(id-1);
-        eventRequests.add(id-1, er);
+      } else {
+        er.setStatus("Approved");
+        System.out.println("Event request approved");
+      }
+        eventRequests.remove(er.getId()-1);
+        eventRequests.add(er.getId()-1, er);
 
         return eventRequests;
     }
 
     static void addFeedback(Staff activeUser, ArrayList<EventRequest> eventRequests) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Enter request Id: ");
-        int id = in.nextInt();
 
-        EventRequest er = null;
-        for(int i = 0; i < eventRequests.size(); i++) {
-            er = eventRequests.get(i);
-            if(er.getId() == id) {
-                break;
-            }
-        }
-
+        EventRequest er = getRequest(eventRequests);
         if(er == null) {
-            System.out.println("No such event request");
-            return;
+          return;
         }
 
         System.out.print("Enter feedback: ");
         String feedback = in.nextLine();
         er.setFeedback(feedback);
-        eventRequests.remove(id-1);
-        eventRequests.add(id-1, er);
+        eventRequests.remove(er.getId()-1);
+        eventRequests.add(er.getId()-1, er);
+        System.out.print("Feedback added");
+
     }
 
 
     public static void main(String[] args) {
-      Boolean[] arr = {true, false, false, true, true};
+      // Creation testing
+
+      boolean[] arr = {true, false, false, true, true};
       EventRequest er = new EventRequest(1, "client", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", arr);
 
       if(er.getClientName().equals("client") && er.getType().equals("type") && er.getDescription().equals("description") && er.getStartDate().equals("startDate") &&
             er.getEndDate().equals("endDate") && er.getExpectedNumber().equals("expectedNumber") && er.getExpectedBudget().equals("expectedBudget") &&
-                er.getPreferences().equals("decorations, breakfast,lunch,dinner, soft/hot drinks, ") && er.getId() == 1 && er.getStatus().equals("Created")) {
+                er.getPreferences().equals("decorations, breakfast,lunch,dinner, soft/hot drinks, ") && er.getId() == 1 && er.getStatus().equals("Created") &&
+                    er.getFeedback() == null) {
 
-                  System.out.println("Test completed");
-                } else {
-                  System.out.println("Test failed");
-                }
+        System.out.println("Creation test completed");
+      } else {
+        System.out.println("Creation test failed");
+      }
+
+      // Method testing
+      // Functions with UI input are tested using Acceptence tests
+
+      Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService"),
+                       new Staff("Janet", "scs1", "123", "SeniorCustomerService"),
+                       new Staff("Alice", "fm1", "123", "FinancialManager")};
+
+      ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
+
+      boolean[] b = {false, false, false, false, true};
+      eventRequests.add(new EventRequest(1, "Joe", "fika", "bullar och kaffe", "5", "6", "20", "1300", b));
+      eventRequests.add(new EventRequest(2, "Emma", "fest", "partykväll", "2", "3", "100", "5000", b));
+      eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));
+
+      String[] s1 = {"kakor", "elefanter", "somethign", "CustomerService"};
+      boolean shouldBeTrue1 = allowedUser(staff[0], s1);
+      boolean shouldBeFalse1 = allowedUser(staff[1], s1);
+
+      if(shouldBeTrue1 == true && shouldBeFalse1 == false) {
+        System.out.println("Method test completed");
+      } else {
+        System.out.println("Method test failed");
+      }
     }
 }
 
