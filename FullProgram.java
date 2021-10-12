@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 class FullProgram {
 
@@ -8,6 +9,9 @@ class FullProgram {
                            new Staff("Jack", "pm1", "123", "ProductionManager"),
                            new Staff("Mike", "am1", "123", "AdministrationManager"),
                            new Staff("Simon", "hr1", "123", "SeniorHRManager")};
+
+  static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
+
 
   public static void main(String[] args) {
 
@@ -33,18 +37,24 @@ class FullProgram {
         case "stop":
           System.out.println("Stopping");
           run = false;
+          break;
 
         case "commands":
           System.out.println(Login.getCommands(activeUser));
           break;
 
+        case "createEventRequest":
+          EventRequest er = EventRequest.creationUI(activeUser, eventRequests.size() + 1);
+          if(er != null) {
+            eventRequests.add(er);
+          }
+          break;
+
         case "viewEventRequest":
           break;
 
-        case "createEventRequest":
-          break;
-
         case "listEventRequest":
+          EventRequest.listEventRequest(activeUser, eventRequests);
           break;
 
         case "approve":
@@ -79,7 +89,12 @@ class FullProgram {
 
         case "createStaffRecruitmentRequest":
           break;
+
+        default:
+          System.out.println("No such command");
+          break;
       }
     }
+    in.close();
   }
 }

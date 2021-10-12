@@ -29,8 +29,6 @@ class Staff {
     return role;
   }
 
-
-
   public static void main(String[] args) {
     Staff george = new Staff("george", "gorg34", "123", "CustomerService");
     String output = george.getName() + george.getUsername() + george.getPassword() + george.getRole();
