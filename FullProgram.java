@@ -12,8 +12,11 @@ class FullProgram {
 
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
 
-
   public static void main(String[] args) {
+    Boolean[] b = {false, false, false, false, true};
+    eventRequests.add(new EventRequest(1, "Joe", "fika", "bullar och kaffe", "5", "6", "20", "1300", b));
+    eventRequests.add(new EventRequest(2, "Emma", "fest", "partykväll", "2", "3", "100", "5000", b));
+    eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));
 
     Scanner in = new Scanner(System.in);
     Staff activeUser = null;
@@ -51,13 +54,19 @@ class FullProgram {
           break;
 
         case "viewEventRequest":
+          EventRequest.viewEventRequest(activeUser, eventRequests);
           break;
 
         case "listEventRequest":
           EventRequest.listEventRequest(activeUser, eventRequests);
           break;
 
+        case "redirect":
+          EventRequest.redirect(activeUser, eventRequests);
+          break;
+
         case "approve":
+          EventRequest.approve(activeUser, eventRequests);
           break;
 
         case "reject":
@@ -73,6 +82,7 @@ class FullProgram {
           break;
 
         case "addFeedback":
+          EventRequest.addFeedback(activeUser, eventRequests);
           break;
 
         case "listTasks":

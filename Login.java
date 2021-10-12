@@ -56,10 +56,10 @@ class Login {
       case "ProductionManager": 
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
       
-      case "ServicelManager": 
+      case "ServiceManager": 
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
       
-      case "AdministrationDepartManager": 
+      case "AdministrationManager": 
         return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
         
       default:

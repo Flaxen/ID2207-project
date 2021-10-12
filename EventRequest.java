@@ -13,7 +13,7 @@ class EventRequest {
     private String expectedNumber;
     private String expectedBudget;
     private Boolean[] preferencesBool;
-
+    private String feedback;
     private String status;
     private String[] preferencesText = {"decorations", "parties", "photos/filming", "breakfast,lunch,dinner", "soft/hot drinks"};
 
@@ -29,7 +29,7 @@ class EventRequest {
         this.expectedBudget = expectedBudget;
         this.preferencesBool = preferencesBool;
         this.status = "Created";
-
+        this.feedback = null;
     }
 
     int getId() {
@@ -39,6 +39,10 @@ class EventRequest {
     String getStatus() {
       return status;
     }
+
+    void setStatus(String status) {
+        this.status = status;
+      }
 
     String getClientName() {
         return clientName;
@@ -79,6 +83,14 @@ class EventRequest {
         return tmp;
     }
 
+    String getFeedback() {
+        return feedback;
+    }
+
+    void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
     static EventRequest creationUI(Staff activeUser, int id) {
       if(!activeUser.getRole().equals("CustomerService")) {
         System.out.println("Permission denied");
@@ -92,10 +104,9 @@ class EventRequest {
       String endDate;
       String expectedNumber;
       String expectedBudget;
-      Boolean[] preferencesBool = new Boolean[5];
+      Boolean[] preferencesBool = {false, false, false, false, false};
 
       String tempIn;
-
       Scanner in = new Scanner(System.in);
 
       System.out.print("Client name:");
@@ -123,35 +134,35 @@ class EventRequest {
       System.out.print("Decoration? Y/N: ");
       tempIn = in.nextLine();
 
-      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("Y")) {
+      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[0] = true;
       }
 
       System.out.print("Parties? Y/N: ");
       tempIn = in.nextLine();
 
-      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("Y")) {
+      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[1] = true;
       }
 
       System.out.print("Photos/Filming? Y/N: ");
       tempIn = in.nextLine();
 
-      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("Y")) {
+      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[2] = true;
       }
 
       System.out.print("Breakfast, Lunch, Dinner? Y/N: ");
       tempIn = in.nextLine();
 
-      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("Y")) {
+      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[3] = true;
       }
 
       System.out.print("Soft/Hot drinks? Y/N: ");
       tempIn = in.nextLine();
 
-      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("Y")) {
+      if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[4] = true;
       }
       System.out.println("EventRequest created");
@@ -177,6 +188,127 @@ class EventRequest {
       }
       System.out.println();
     }
+
+    static void viewEventRequest(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+
+        Scanner in = new Scanner(System.in);
+        System.out.print("Enter request Id: ");
+        int id = in.nextInt();
+
+        if(!activeUser.getRole().equals("SeniorCustomerService") && !activeUser.getRole().equals("FinancialManager") &&
+          !activeUser.getRole().equals("AdministrationManager")) {
+        System.out.println("Permission denied");
+        return;
+      }
+
+      EventRequest er = null;
+      for(int i = 0; i < eventRequests.size(); i++) {
+        er = eventRequests.get(i);
+        if(er.getId() == id) {
+            break;
+        }
+      }
+
+      if(er == null) {
+        System.out.println("No such event request");
+        return;
+      }
+
+      System.out.println("\nId: " + er.getId());
+      System.out.println("status: " + er.getStatus());
+      System.out.println("client name: " + er.getClientName());
+      System.out.println("type: " + er.getType());
+      System.out.println("description: " + er.getDescription());
+      System.out.println("start date: " + er.getStartDate());
+      System.out.println("end date: " + er.getEndDate());
+      System.out.println("expected number of attendees: " + er.getExpectedNumber());
+      System.out.println("expected budget: " + er.getExpectedBudget());
+      System.out.println("\nPrefereces: ");
+      System.out.println(er.getPreferences());
+      System.out.println();
+    }
+
+    static ArrayList<EventRequest> approve(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+        if(!activeUser.getRole().equals("SeniorCustomerService") &&
+          !activeUser.getRole().equals("AdministrationManager")) {
+            System.out.println("Permission denied");
+            return null;
+        }
+        return nextChainInCommand(activeUser, eventRequests);
+    }
+
+    static ArrayList<EventRequest> redirect(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+        if(!activeUser.getRole().equals("FinancialManager")) {
+            System.out.println("Permission denied");
+            return null;
+        }
+        return nextChainInCommand(activeUser, eventRequests);
+    }
+
+    static ArrayList<EventRequest> nextChainInCommand(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Enter request Id: ");
+        int id = in.nextInt();
+
+        EventRequest er = null;
+        for(int i = 0; i < eventRequests.size(); i++) {
+            er = eventRequests.get(i);
+            if(er.getId() == id) {
+                break;
+            }
+        }
+
+        if(er == null) {
+            System.out.println("No such event request");
+            return null;
+        }
+
+        if(activeUser.getRole().equals("SeniorCustomerService")) {
+            er.setStatus("Redirected to Financial Manager");
+            System.out.println("Event request forwarded to Financial Manager");
+        } else if(activeUser.getRole().equals("FinancialManager")) {
+            if(er.feedback == null) {
+                System.out.println("No feedback added");
+                return null;
+            }
+            er.setStatus("Redirected to Administration Manager");
+            System.out.println("Event request forwarded to Administration Manager");
+        }
+        else {
+            er.setStatus("Approved");
+            System.out.println("Event request approved");
+        }
+        eventRequests.remove(id-1);
+        eventRequests.add(id-1, er);
+
+        return eventRequests;
+    }
+
+    static void addFeedback(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Enter request Id: ");
+        int id = in.nextInt();
+
+        EventRequest er = null;
+        for(int i = 0; i < eventRequests.size(); i++) {
+            er = eventRequests.get(i);
+            if(er.getId() == id) {
+                break;
+            }
+        }
+
+        if(er == null) {
+            System.out.println("No such event request");
+            return;
+        }
+
+        System.out.print("Enter feedback: ");
+        String feedback = in.nextLine();
+        er.setFeedback(feedback);
+        eventRequests.remove(id-1);
+        eventRequests.add(id-1, er);
+    }
+
 
     public static void main(String[] args) {
       Boolean[] arr = {true, false, false, true, true};
