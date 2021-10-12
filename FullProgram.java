@@ -54,11 +54,11 @@ class FullProgram {
           break;
 
         case "viewEventRequest":
-          EventRequest.viewEventRequest(activeUser, eventRequests);
+          EventRequest.view(activeUser, eventRequests);
           break;
 
         case "listEventRequest":
-          EventRequest.listEventRequest(activeUser, eventRequests);
+          EventRequest.list(activeUser, eventRequests);
           break;
 
         case "redirect":

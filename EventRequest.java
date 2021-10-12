@@ -198,7 +198,7 @@ class EventRequest {
       return false;
     }
 
-    static void listEventRequest(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+    static void list(Staff activeUser, ArrayList<EventRequest> eventRequests) {
 
       String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
       if(!allowedUser(activeUser, authorizedStaff)) {
@@ -215,7 +215,7 @@ class EventRequest {
       System.out.println();
     }
 
-    static void viewEventRequest(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+    static void view(Staff activeUser, ArrayList<EventRequest> eventRequests) {
 
       String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
       if(!allowedUser(activeUser, authorizedStaff)) {
@@ -266,10 +266,10 @@ class EventRequest {
         return null;
       }
 
-      if(activeUser.getRole().equals("SeniorCustomerService")) {
+      if(activeUser.getRole().equals("SeniorCustomerService") && er.getStatus().equals("Created")) {
           er.setStatus("Redirected to Financial Manager");
           System.out.println("Event request forwarded to Financial Manager");
-      } else if(activeUser.getRole().equals("FinancialManager")) {
+      } else if(activeUser.getRole().equals("FinancialManager") && er.getStatus().equals("Redirected to Financial Manager")) {
 
         if(er.feedback == null) {
             System.out.println("No feedback added");
@@ -278,9 +278,12 @@ class EventRequest {
         er.setStatus("Redirected to Administration Manager");
         System.out.println("Event request forwarded to Administration Manager");
 
-      } else {
+      } else if(activeUser.getRole().equals("AdministrationManager") && er.getStatus().equals("Redirected to Administration Manager")){
         er.setStatus("Approved");
         System.out.println("Event request approved");
+      } else {
+        System.out.println("Permission denied, wrong status");
+        return null;
       }
         eventRequests.remove(er.getId()-1);
         eventRequests.add(er.getId()-1, er);
@@ -296,18 +299,24 @@ class EventRequest {
           return;
         }
 
+        if(!er.getStatus().equals("Redirected to Financial Manager")) {
+          System.out.println("Permission denied, wrong status");
+          return;
+        }
+
         System.out.print("Enter feedback: ");
         String feedback = in.nextLine();
         er.setFeedback(feedback);
         eventRequests.remove(er.getId()-1);
         eventRequests.add(er.getId()-1, er);
-        System.out.print("Feedback added");
+        System.out.println("Feedback added");
 
     }
 
 
     public static void main(String[] args) {
       // Creation testing
+      // Completed test gets Permission denied print. is ok.
 
       boolean[] arr = {true, false, false, true, true};
       EventRequest er = new EventRequest(1, "client", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", arr);
