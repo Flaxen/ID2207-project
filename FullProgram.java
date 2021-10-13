@@ -7,7 +7,7 @@ class FullProgram {
                           new Staff("Janet", "scs1", "123", "SeniorCustomerService", "CustomerService"),
                           new Staff("Alice", "fm1", "123", "FinancialManager", "FinancialDepartment"),
                           new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment"),
-                          new Staff("BobareeBobaroo", "pm2", "123", "ProductionManager", "ProductionDepartment"),
+                          new Staff("Bob", "pm2", "123", "ProductionManager", "ProductionDepartment"),
                           new Staff("Natalie", "sm1", "123", "ServiceManager", "ServiceDepartment"),
                           new Staff("Mike", "am1", "123", "AdministrationManager", "AdministrationDepartment"),
                           new Staff("Simon", "hr1", "123", "SeniorHRManager", "HRTeam"),
@@ -27,7 +27,7 @@ class FullProgram {
 
     tasks.add(new Task(1, eventRequests.get(1), "take photo of coffe", "Photography", staff[3], 2));
     tasks.add(new Task(2, eventRequests.get(2), "serve pastries", "Waitress", staff[5], 1));
-    tasks.add(new Task(3, eventRequests.get(0), "take photo of grill", "Photography", staff[3], 0));
+    tasks.add(new Task(3, eventRequests.get(0), "take photo of grill", "Photography", staff[4], 0));
 
     recruitments.add(new RecruitmentRequest(1, "Full Time", "ProductionDepartment", 4, "NetworkEngineer", "connect cables"));
     recruitments.add(new RecruitmentRequest(2, "Part Time", "ServiceDepartment", 3, "Chef", "cook food"));
@@ -39,8 +39,8 @@ class FullProgram {
     Staff activeUser = null;
     boolean run = true;
 
-    System.out.println("SEP system 2.0:\n");
-    
+    System.out.println("SEP system 0.2:\n");
+
     while(run) {
       String input = in.nextLine();
       switch(input) {
@@ -93,6 +93,10 @@ class FullProgram {
           FinancialRequest.updateStatus(activeUser, financialRequests);
           break;
 
+        case "setDiscount":
+          EventRequest.updateDiscount(activeUser, eventRequests);
+          break;
+
         case "updateRecruitmentRequestStatus":
           RecruitmentRequest.updateStatus(activeUser, recruitments);
           break;
@@ -120,7 +124,8 @@ class FullProgram {
           break;
 
         case "addPlan":
-          
+          Task.addPlan(activeUser, tasks);
+          break;
 
         case "createFinancialRequest":
           FinancialRequest financialRequest = FinancialRequest.creationUI(activeUser, financialRequests.size() + 1, eventRequests);
@@ -132,7 +137,7 @@ class FullProgram {
         case "listFinancialRequests":
           FinancialRequest.list(activeUser, financialRequests);
           break;
-        
+
         case "viewFinancialRequest":
           FinancialRequest.view(activeUser, financialRequests);
           break;
@@ -147,7 +152,7 @@ class FullProgram {
         case "listRecruitmentRequests":
           RecruitmentRequest.list(activeUser, recruitments);
           break;
-        
+
         case "viewRecruitmentRequest":
           RecruitmentRequest.view(activeUser, recruitments);
           break;

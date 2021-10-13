@@ -15,6 +15,7 @@ class EventRequest {
     private boolean[] preferencesBool;
     private String feedback;
     private String status;
+    private String discountPercentage;
     private String[] preferencesText = {"decorations", "parties", "photos/filming", "breakfast,lunch,dinner", "soft/hot drinks"};
 
     EventRequest(int id, String clientName, String type, String description, String startDate,
@@ -29,7 +30,8 @@ class EventRequest {
         this.expectedBudget = expectedBudget;
         this.preferencesBool = preferencesBool;
         this.status = "Created";
-        this.feedback = null;
+        this.feedback = "";
+        this.discountPercentage = "0";
     }
 
     int getId() {
@@ -43,6 +45,14 @@ class EventRequest {
     void setStatus(String status) {
         this.status = status;
       }
+
+    String getDiscountPercentage() {
+      return discountPercentage;
+    }
+
+    void setDiscountPercentage(String discount) {
+      this.discountPercentage = discount;
+    }
 
     String getClientName() {
         return clientName;
@@ -241,6 +251,8 @@ class EventRequest {
       System.out.println("end date: " + er.getEndDate());
       System.out.println("expected number of attendees: " + er.getExpectedNumber());
       System.out.println("expected budget: " + er.getExpectedBudget());
+      System.out.println("Discount (%): " + er.getDiscountPercentage());
+      System.out.println("Financial feedback: " + er.getFeedback());
       System.out.println("\nPrefereces: ");
       System.out.println(er.getPreferences());
       System.out.println();
@@ -252,6 +264,33 @@ class EventRequest {
         return null;
       }
         return nextChainInCommand(activeUser, eventRequests);
+    }
+
+    static ArrayList<EventRequest> updateDiscount(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+      String[] authorizedStaff = {"FinancialManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
+        return null;
+      }
+
+      EventRequest er = getRequest(eventRequests);
+      if(er == null) {
+        return null;
+      }
+
+      if(!er.getStatus().equals("Redirected to Financial Manager")) {
+        System.out.println("Permission denied, wrong status");
+        return null;
+      }
+
+      Scanner in = new Scanner(System.in);
+      System.out.print("Enter new discount (%): ");
+      String discount = in.nextLine();
+
+      er.setDiscountPercentage(discount);
+      eventRequests.remove(er.getId()-1);
+      eventRequests.add(er.getId()-1, er);
+      System.out.println("Discount updated");
+      return eventRequests;
     }
 
     static ArrayList<EventRequest> reject(Staff activeUser, ArrayList<EventRequest> eventRequests) {
@@ -268,7 +307,7 @@ class EventRequest {
       er.setStatus("Rejected");
       eventRequests.remove(er.getId()-1);
       eventRequests.add(er.getId()-1, er);
-      
+
       System.out.println("Rejected event request");
       return eventRequests;
     }
@@ -294,7 +333,7 @@ class EventRequest {
           System.out.println("Event request forwarded to Financial Manager");
       } else if(activeUser.getRole().equals("FinancialManager") && er.getStatus().equals("Redirected to Financial Manager")) {
 
-        if(er.feedback == null) {
+        if(er.feedback == "") {
             System.out.println("No feedback added");
             return null;
         }

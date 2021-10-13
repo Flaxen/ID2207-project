@@ -9,6 +9,7 @@ class Task {
     private Staff sender;
     private int priority;           // 0:high, 1:medium, 2:low
     private String status;
+    private String plan;
 
     Task(int id, EventRequest eventRequest, String description, String subTeam, Staff sender, int priority) {
         this.id = id;
@@ -18,10 +19,19 @@ class Task {
         this.sender = sender;
         this.priority = priority;
         status = "Created";
+        plan = "";
     }
 
     int getId() {
         return id;
+    }
+
+    String getPlan() {
+      return plan;
+    }
+
+    void setPlan(String plan) {
+      this.plan = plan;
     }
 
     String getStatus() {
@@ -112,10 +122,38 @@ class Task {
         System.out.println("Sender: " + task.getSender().getName());
         System.out.println("Priority: " + task.getPriority());           // 0:high, 1:medium, 2:low
         System.out.println("Status: " + task.getStatus());
+        System.out.println("Plan: " + task.getPlan());
+
       } else {
         System.out.println("Permission denied");
       }
 
+    }
+
+    static ArrayList<Task> addPlan(Staff activeUser, ArrayList<Task> tasks) {
+      if(activeUser == null) {
+          return null;
+      }
+
+      Task task = getTask(tasks);
+      if(task == null) {
+        return null;
+      }
+
+      if(!activeUser.getSubteam().equals(task.getSubteam())) {
+        System.out.println("Permission denied");
+        return null;
+      }
+
+      Scanner in = new Scanner(System.in);
+      System.out.print("Enter plan: ");
+      String plan = in.nextLine();
+
+      task.setPlan(plan);
+      tasks.remove(task.getId() - 1);
+      tasks.add(task.getId() - 1, task);
+      System.out.println("Plan added");
+      return tasks;
     }
 
     static Task creationUI(Staff activeUser, int id, ArrayList<EventRequest> eventRequests) {
@@ -156,7 +194,7 @@ class Task {
         "expectedNumber", "expectedBudget", b),
         "description", "subTeam", new Staff("name", "username", "password", "role", "subTeam"), 47);
 
-        if(t.getId() == 1 && t.getEventRequest().getId() == 1 && t.getDescription().equals("description") &&
+        if(t.getId() == 1 && t.getEventRequest().getId() == 1 && t.getDescription().equals("description") && t.getPlan().equals("") &&
             t.getSubteam().equals("subTeam") && t.getSender().getName().equals("name") && t.getPriority() == 47 && t.getStatus().equals("Created")) {
                 System.out.println("Test completed");
             }
