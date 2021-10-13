@@ -101,9 +101,6 @@ class FullProgram {
           RecruitmentRequest.updateStatus(activeUser, recruitments);
           break;
 
-        case "viewBudget":
-          break;
-
         case "addFeedback":
           EventRequest.addFeedback(activeUser, eventRequests);
           break;

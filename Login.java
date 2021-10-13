@@ -40,29 +40,33 @@ class Login {
       return "login, logout, stop, commands";
     }
 
-    // TODO: refactor names and commands later, check all commands listed
-
     switch(staff.getRole()) {
       case "CustomerService":
-        return "createEventRequest, logout, stop, listTasks, commands";
+        return "createEventRequest, logout, stop, viewTask, listTasks, commands";
 
       case "SeniorCustomerService":
-        return "listEventRequests, viewEventRequest, approve, reject, logout, stop, listTasks, commands";
+        return "listEventRequests, viewEventRequest, approve, reject, createTask, logout, stop, viewTask listTasks, commands";
 
       case "FinancialManager":
-        return "listEventRequests, viewEventRequest, listFinancialRequests, viewFinancialRequest, updateFinancialRequestStatus, viewBudget, addFeedback, logout, stop, listTasks, commands";
+        return "listEventRequests, viewEventRequest, listFinancialRequests, viewFinancialRequest, updateFinancialRequestStatus, addFeedback, setDiscount, logout, stop, viewTask, listTasks, commands";
 
       case "ProductionManager":
-        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
+        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, listFinancialRequests, listRecruitmentRequest, logout, stop, commands";
 
       case "ServiceManager":
-        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
+        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, listFinancialRequests, listRecruitmentRequest, logout, stop, commands";
 
       case "AdministrationManager":
-        return "listEventRequest, viewEventRequest, approve, reject, listTasks, logout, stop, commands";
+        return "listEventRequest, viewEventRequest, approve, reject, viewTask, listTasks, logout, stop, commands";
 
       case "SeniorHRManager":
-        return "listRecruitmentRequest, viewRecruitmentRequest, updateRecruitmentRequest, listTasks, logout, stop, commands";
+        return "listRecruitmentRequest, viewRecruitmentRequest, updateRecruitmentRequestStatus, viewTask, listTasks, logout, stop, commands";
+
+      case "Photography":
+        return "addPlan, viewTask, logout, stop, listTasks, commands";
+
+      case "SeniorWaitress":
+        return "addPlan, viewTask, logout, stop, listTasks, commands";
 
       default:
         return "error: unknown role";
@@ -79,8 +83,11 @@ class Login {
     Staff ou2 = login("fm1", "321", staff);
     Staff ou3 = login("scs1", "123", staff);
     Staff ou4 = login("aphgaogh", "123", staff);
+    String ou5 = getCommands(staff[0]);
 
-    if(ou1.getName().equals("Alice") && ou2 == null && ou3.getName().equals("Janet") && ou4 == null) {
+    if(ou1.getName().equals("Alice") && ou2 == null && ou3.getName().equals("Janet") && ou4 == null &&
+      ou5.equals("listEventRequests, viewEventRequest, approve, reject, logout, stop, listTasks, commands")) {
+
       System.out.println("Test passed");
     } else {
       System.out.println("Test failed");

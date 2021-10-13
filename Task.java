@@ -101,7 +101,6 @@ class Task {
       return null;
     }
 
-
     static void view(Staff activeUser, ArrayList<Task> tasks) {
       // anycan needs to check tasks, no need for authorizedStaff
       if(activeUser == null) {
@@ -194,8 +193,11 @@ class Task {
         "expectedNumber", "expectedBudget", b),
         "description", "subTeam", new Staff("name", "username", "password", "role", "subTeam"), 47);
 
-        if(t.getId() == 1 && t.getEventRequest().getId() == 1 && t.getDescription().equals("description") && t.getPlan().equals("") &&
-            t.getSubteam().equals("subTeam") && t.getSender().getName().equals("name") && t.getPriority() == 47 && t.getStatus().equals("Created")) {
+        t.setStatus("status2");
+        t.setPlan("plan2");
+
+        if(t.getId() == 1 && t.getEventRequest().getId() == 1 && t.getDescription().equals("description") && t.getPlan().equals("plan2") &&
+            t.getSubteam().equals("subTeam") && t.getSender().getName().equals("name") && t.getPriority() == 47 && t.getStatus().equals("status2")) {
                 System.out.println("Test completed");
             }
         else {

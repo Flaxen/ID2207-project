@@ -42,16 +42,8 @@ class EventRequest {
       return status;
     }
 
-    void setStatus(String status) {
-        this.status = status;
-      }
-
     String getDiscountPercentage() {
       return discountPercentage;
-    }
-
-    void setDiscountPercentage(String discount) {
-      this.discountPercentage = discount;
     }
 
     String getClientName() {
@@ -95,6 +87,14 @@ class EventRequest {
 
     String getFeedback() {
         return feedback;
+    }
+
+    void setStatus(String status) {
+        this.status = status;
+      }
+
+    void setDiscountPercentage(String discount) {
+      this.discountPercentage = discount;
     }
 
     void setFeedback(String feedback) {
@@ -321,7 +321,6 @@ class EventRequest {
     }
 
     static ArrayList<EventRequest> nextChainInCommand(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      Scanner in = new Scanner(System.in);
 
       EventRequest er = getRequest(eventRequests);
       if(er == null) {
@@ -375,7 +374,6 @@ class EventRequest {
 
     }
 
-
     public static void main(String[] args) {
       // Creation testing
       // Completed test gets Permission denied print. is ok.
@@ -383,10 +381,14 @@ class EventRequest {
       boolean[] arr = {true, false, false, true, true};
       EventRequest er = new EventRequest(1, "client", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", arr);
 
+      er.setStatus("status2");
+      er.setDiscountPercentage("20");
+      er.setFeedback("feedback2");
+
       if(er.getClientName().equals("client") && er.getType().equals("type") && er.getDescription().equals("description") && er.getStartDate().equals("startDate") &&
             er.getEndDate().equals("endDate") && er.getExpectedNumber().equals("expectedNumber") && er.getExpectedBudget().equals("expectedBudget") &&
-                er.getPreferences().equals("decorations, breakfast,lunch,dinner, soft/hot drinks, ") && er.getId() == 1 && er.getStatus().equals("Created") &&
-                    er.getFeedback() == null) {
+                er.getPreferences().equals("decorations, breakfast,lunch,dinner, soft/hot drinks, ") && er.getId() == 1 && er.getStatus().equals("status2") &&
+                    er.getFeedback() == "feedback2" && er.discountPercentage == "20") {
 
         System.out.println("Creation test completed");
       } else {

@@ -11,7 +11,7 @@ class RecruitmentRequest {
     private String jobTitle;
     private String description;
 
-    RecruitmentRequest(int id, String contractType, String department, 
+    RecruitmentRequest(int id, String contractType, String department,
         int experience, String jobTitle, String description) {
             this.id = id;
             this.status = "created";
@@ -116,11 +116,11 @@ class RecruitmentRequest {
         r.setStatus(status);
         recruitments.remove(r.getId()-1);
         recruitments.add(r.getId()-1, r);
-      
+
         System.out.println("Status updated");
         return recruitments;
     }
-    
+
     static RecruitmentRequest getRequest(ArrayList<RecruitmentRequest> recruitments) {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter request Id: ");
@@ -163,8 +163,10 @@ class RecruitmentRequest {
         Staff s = new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment");
         RecruitmentRequest r = new RecruitmentRequest(1, "contractType", s.getSubteam(), 5, "jobTitle", "description");
 
+        r.setStatus("status2");
+
         if(r.getId() == 1 && r.getContractType().equals("contractType") && r.getDepartment().equals("ProductionDepartment") &&
-            r.getExperience() == 5 && r.getJobTitle().equals("jobTitle") && r.getDescription().equals("description")) {
+            r.getExperience() == 5 && r.getJobTitle().equals("jobTitle") && r.getDescription().equals("description") && r.getStatus("status2")) {
                 System.out.println("Test completed");
             } else {
                 System.out.println("Test failed");

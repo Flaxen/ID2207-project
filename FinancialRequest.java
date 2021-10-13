@@ -85,7 +85,7 @@ class FinancialRequest {
         }
         System.out.println();
     }
-    
+
     static FinancialRequest getRequest(ArrayList<FinancialRequest> financialRequests) {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter request Id: ");
@@ -141,7 +141,7 @@ class FinancialRequest {
         f.setStatus(status);
         financialRequests.remove(f.getId()-1);
         financialRequests.add(f.getId()-1, f);
-      
+
         System.out.println("Status updated");
         return financialRequests;
     }
@@ -151,8 +151,10 @@ class FinancialRequest {
         EventRequest ev = new EventRequest(1, "clientName", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", null);
         FinancialRequest f = new FinancialRequest(1, s.getSubteam(), ev, 500, "reason");
 
-        if(f.getId() == 1 && f.getDepartment().equals("ProductionDepartment") && f.getEventRequest().getId() == 1 && 
-            f.getAmount() == 500 && f.getReason().equals("reason") && f.getStatus().equals("Created")) {
+        f.setStatus("status2");
+
+        if(f.getId() == 1 && f.getDepartment().equals("ProductionDepartment") && f.getEventRequest().getId() == 1 &&
+            f.getAmount() == 500 && f.getReason().equals("reason") && f.getStatus().equals("status2")) {
                 System.out.println("Test completed");
             } else {
                 System.out.println("Test failed");
