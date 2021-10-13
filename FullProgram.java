@@ -17,7 +17,7 @@ class FullProgram {
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
   static private ArrayList<Task> tasks = new ArrayList<Task>();
   static private ArrayList<RecruitmentRequest> recruitments = new ArrayList<RecruitmentRequest>();
-
+  static private ArrayList<FinancialRequest> financialRequests = new ArrayList<FinancialRequest>();
 
   public static void main(String[] args) {
     boolean[] b = {false, false, false, false, true};
@@ -86,9 +86,6 @@ class FullProgram {
         case "reject":
           break;
 
-        case "listFinancialRequest":
-          break;
-
         case "updateFinancialRequestStatus":
           break;
 
@@ -115,7 +112,18 @@ class FullProgram {
           break;
 
         case "createFinancialRequest":
-          
+          FinancialRequest financialRequest = FinancialRequest.creationUI(activeUser, financialRequests.size() + 1, eventRequests);
+          if(financialRequest != null) {
+            financialRequests.add(financialRequest);
+          }
+          break;
+
+        case "listFinancialRequests":
+          FinancialRequest.list(activeUser, financialRequests);
+          break;
+        
+        case "viewFinancialRequests":
+          FinancialRequest.view(activeUser, financialRequests);
           break;
 
         case "createRecruitmentRequest":
@@ -125,11 +133,11 @@ class FullProgram {
           }
           break;
 
-        case "listRecruitmentRequests":
+        case "listRecruitmentRequest":
           RecruitmentRequest.list(activeUser, recruitments);
           break;
         
-        case "viewRecruitmentRequests":
+        case "viewRecruitmentRequest":
           RecruitmentRequest.view(activeUser, recruitments);
           break;
 

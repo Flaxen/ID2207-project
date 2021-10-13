@@ -51,7 +51,7 @@ class Login {
         return "listEventRequest, viewEventRequest, approve, reject, logout, stop, listTasks, commands";
 
       case "FinancialManager":
-        return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, listTasks, logout, stop, commands";
+        return "listEventRequest, viewEventRequest, listFinancialRequest, viewFinancialRequest, updateFinancialRequestStatus, viewBudget, addFeedback, listTasks, logout, stop, commands";
 
       case "ProductionManager":
         return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
