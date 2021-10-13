@@ -189,6 +189,10 @@ class EventRequest {
     }
 
     static boolean allowedUser(Staff activeUser, String[] authorizedStaff) {
+      if(activeUser == null) {
+        System.out.println("Permission denied");
+        return false;
+      }
       for(int i = 0; i < authorizedStaff.length; i++) {
         if(activeUser.getRole().equals(authorizedStaff[i])) {
           return true;

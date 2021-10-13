@@ -43,13 +43,13 @@ class Login {
 
     switch(staff.getRole()) {
       case "CustomerService":
-        return "createEventRequest, logout, stop, commands";
+        return "createEventRequest, logout, stop, listTasks, commands";
 
       case "SeniorCustomerService":
-        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
+        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, listTasks, commands";
 
       case "FinancialManager":
-        return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, logout, stop, commands";
+        return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, listTasks, logout, stop, commands";
 
       case "ProductionManager":
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
@@ -58,7 +58,7 @@ class Login {
         return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
 
       case "AdministrationManager":
-        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, commands";
+        return "listEventRequest, viewEventRequest, approve, reject, listTasks, logout, stop, commands";
 
       default:
         return "error: unknown role";
@@ -68,9 +68,9 @@ class Login {
 
   public static void main(String[] args) {
 
-    Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService"),
-                     new Staff("Janet", "scs1", "123", "SeniorCustomerService"),
-                     new Staff("Alice", "fm1", "123", "FinancialManager")};
+    Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService", "CustomerService"),
+                     new Staff("Janet", "scs1", "123", "SeniorCustomerService", null),
+                     new Staff("Alice", "fm1", "123", "FinancialManager", null)};
 
     Staff ou1 = login("fm1", "123", staff);
     Staff ou2 = login("fm1", "321", staff);

@@ -5,14 +5,17 @@ class FullProgram {
 
   static private Staff[] staff = {new Staff("Sarah", "cs1", "123", "CustomerService", "CustomerService"),
                           new Staff("Janet", "scs1", "123", "SeniorCustomerService", "CustomerService"),
-                          new Staff("Alice", "fm1", "123", "FinancialManager", null),
-                          new Staff("Jack", "pm1", "123", "ProductionManager", null),
-                          new Staff("Mike", "am1", "123", "AdministrationManager", null),
+                          new Staff("Alice", "fm1", "123", "FinancialManager", "FinancialDepartment"),
+                          new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment"),
+                          new Staff("BobareeBobaroo", "pm2", "123", "ProductionManager", "ProductionDepartment"),
+                          new Staff("Natalie", "sm1", "123", "ServiceManager", "ServiceDepartment"),
+                          new Staff("Mike", "am1", "123", "AdministrationManager", "AdministrationDepartment"),
                           new Staff("Simon", "hr1", "123", "SeniorHRManager", "HRTeam"),
                           new Staff("Tobias", "ph1", "123", "Photography", "Photography"),
                           new Staff("Kate", "wh1", "123", "SeniorWaitress", "Waitress")};
 
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
+  static private ArrayList<Task> tasks = new ArrayList<Task>();
 
   public static void main(String[] args) {
     boolean[] b = {false, false, false, false, true};
@@ -88,12 +91,18 @@ class FullProgram {
           break;
 
         case "listTasks":
+          Task.list(activeUser, tasks);
           break;
 
         case "viewTask":
+          Task.view(activeUser, tasks);
           break;
 
         case "createTask":
+          Task task = Task.creationUI(activeUser, tasks.size() + 1, eventRequests);
+          if(task != null) {
+            tasks.add(task);
+          }
           break;
 
         case "createFinancialRequest":
