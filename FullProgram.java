@@ -16,12 +16,21 @@ class FullProgram {
 
   static private ArrayList<EventRequest> eventRequests = new ArrayList<EventRequest>();
   static private ArrayList<Task> tasks = new ArrayList<Task>();
+  static private ArrayList<RecruitmentRequest> recruitments = new ArrayList<RecruitmentRequest>();
+
 
   public static void main(String[] args) {
     boolean[] b = {false, false, false, false, true};
     eventRequests.add(new EventRequest(1, "Joe", "fika", "bullar och kaffe", "5", "6", "20", "1300", b));
     eventRequests.add(new EventRequest(2, "Emma", "fest", "partykväll", "2", "3", "100", "5000", b));
     eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));
+
+    tasks.add(new Task(1, eventRequests.get(1), "take photo of fika", "Photography", staff[3], 2));
+    tasks.add(new Task(2, eventRequests.get(2), "serve fika", "Waitress", staff[5], 1));
+    tasks.add(new Task(3, eventRequests.get(0), "take photo of grill", "Photography", staff[3], 0));
+
+    recruitments.add(new RecruitmentRequest(1, "Full Time", "ProductionDepartment", 4, "NetworkEngineer", "connect cables"));
+    recruitments.add(new RecruitmentRequest(2, "Part Time", "ServiceDepartment", 3, "Chef", "cook food"));
 
     Scanner in = new Scanner(System.in);
     Staff activeUser = null;
@@ -106,9 +115,22 @@ class FullProgram {
           break;
 
         case "createFinancialRequest":
+          
           break;
 
-        case "createStaffRecruitmentRequest":
+        case "createRecruitmentRequest":
+          RecruitmentRequest recruitment = RecruitmentRequest.creationUI(activeUser, recruitments.size() + 1);
+          if(recruitment != null) {
+            recruitments.add(recruitment);
+          }
+          break;
+
+        case "listRecruitmentRequests":
+          RecruitmentRequest.list(activeUser, recruitments);
+          break;
+        
+        case "viewRecruitmentRequests":
+          RecruitmentRequest.view(activeUser, recruitments);
           break;
 
         default:

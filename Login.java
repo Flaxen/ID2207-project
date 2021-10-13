@@ -41,6 +41,8 @@ class Login {
       return "login, logout, stop, commands";
     }
 
+    // TODO: refactor names and commands later, check all commands listed
+
     switch(staff.getRole()) {
       case "CustomerService":
         return "createEventRequest, logout, stop, listTasks, commands";
@@ -52,13 +54,16 @@ class Login {
         return "listEventRequest, listFinancialRequest, updateFinancialRequestStatus, viewEventRequest, viewBudget, addFeedback, listTasks, logout, stop, commands";
 
       case "ProductionManager":
-        return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
+        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
 
       case "ServiceManager":
-        return "listTasks, viewTask, createTask, createFinancialRequest, createStaffRecruitmentRequest, logout, stop, commands";
+        return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
 
       case "AdministrationManager":
         return "listEventRequest, viewEventRequest, approve, reject, listTasks, logout, stop, commands";
+
+      case "SeniorHRManager":
+        return "listRecruitmentRequest, viewRecruitmentRequest, updateRecruitmentRequest, logout, stop, commands";
 
       default:
         return "error: unknown role";
