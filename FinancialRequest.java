@@ -155,9 +155,10 @@ class FinancialRequest {
 
         if(f.getId() == 1 && f.getDepartment().equals("ProductionDepartment") && f.getEventRequest().getId() == 1 &&
             f.getAmount() == 500 && f.getReason().equals("reason") && f.getStatus().equals("status2")) {
-                System.out.println("Test completed");
-            } else {
-                System.out.println("Test failed");
-            }
+
+            System.out.println("Test completed");
+        } else {
+            System.out.println("Test failed");
+        }
     }
 }

@@ -70,23 +70,57 @@ class FullProgram {
           break;
 
         case "viewEventRequest":
-          EventRequest.view(activeUser, eventRequests);
+          String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          int id = EventRequest.askForId();
+
+          System.out.println(EventRequest.view(id, eventRequests));
           break;
 
         case "listEventRequests":
-          EventRequest.list(activeUser, eventRequests);
+          String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          System.out.println(EventRequest.list(id, eventRequests));
+          System.out.println();
           break;
 
         case "redirect":
-          EventRequest.redirect(activeUser, eventRequests);
+          String[] authorizedStaff = {"FinancialManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            return null;
+          }
+
+          Int id = EventRequest.askForId();
+
+          EventRequest.redirect(id, activeUser, eventRequests);
           break;
 
         case "approve":
-          EventRequest.approve(activeUser, eventRequests);
+          String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            return null;
+          }
+
+          int id = EventRequest.askForId();
+
+          EventRequest.nextChainInCommand(id, activeUser, eventRequests);
           break;
 
         case "reject":
-          EventRequest.reject(activeUser, eventRequests);
+          String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            return null;
+          }
+
+          int id = EventRequest.askForId();
+
+          EventRequest.nextChainInCommand(id, activeUser, eventRequests);
           break;
 
         case "updateFinancialRequestStatus":
@@ -94,7 +128,16 @@ class FullProgram {
           break;
 
         case "setDiscount":
-          EventRequest.updateDiscount(activeUser, eventRequests);
+          String[] authorizedStaff = {"FinancialManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          int id = EventRequest.askForId();
+          System.out.print("Enter new discount (%): ");
+          String discount = in.nextLine();
+
+          EventRequest.updateDiscount(id, discount, activeUser, eventRequests);
           break;
 
         case "updateRecruitmentRequestStatus":
@@ -102,7 +145,17 @@ class FullProgram {
           break;
 
         case "addFeedback":
-          EventRequest.addFeedback(activeUser, eventRequests);
+          String[] authorizedStaff = {"FinancialManager"};
+          if(!allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          int id = EventRequest.askForId();
+
+          System.out.print("Enter feedback: ");
+          String feedback = in.nextLine();
+
+          EventRequest.addFeedback(id, feedback, activeUser, eventRequests);
           break;
 
         case "listTasks":

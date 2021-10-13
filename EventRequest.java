@@ -101,6 +101,13 @@ class EventRequest {
         this.feedback = feedback;
     }
 
+    int askForId() {
+      Scanner in = new Scanner(System.in);
+      System.out.print("Enter request Id: ");
+      int id = in.nextInt();
+      return id;
+    }
+
     static EventRequest creationUI(Staff activeUser, int id) {
       String[] authorizedStaff = {"CustomerService"};
       if(!allowedUser(activeUser, authorizedStaff)) {
@@ -180,10 +187,7 @@ class EventRequest {
       return new EventRequest(id, clientName, type, description, startDate, endDate, expectedNumber, expectedBudget, preferencesBool);
     }
 
-    static EventRequest getRequest(ArrayList<EventRequest> eventRequests) {
-      Scanner in = new Scanner(System.in);
-      System.out.print("Enter request Id: ");
-      int id = in.nextInt();
+    static EventRequest getRequest(int id, ArrayList<EventRequest> eventRequests) {
 
       EventRequest er = null;
       EventRequest temp = null;
@@ -212,67 +216,49 @@ class EventRequest {
       return false;
     }
 
-    static void list(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+    static String list(ArrayList<EventRequest> eventRequests) {
 
-      String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
-        return;
-      }
-
-      System.out.println("\nID:     Status:");
+      // System.out.println("\nID:     Status:");
 
       EventRequest temp;
+      String out = "\nID:     Status:\n";
       for(int i = 0; i < eventRequests.size(); i++) {
         temp = eventRequests.get(i);
-        System.out.println(temp.getId() + " " + temp.getStatus());
+        out = out + temp.getId() + " " + temp.getStatus() + "\n";
+        // System.out.println(temp.getId() + " " + temp.getStatus());
       }
-      System.out.println();
+      return out;
     }
 
-    static void view(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+    static String view(int id, ArrayList<EventRequest> eventRequests) {
 
-      String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
-        return;
-      }
-
-      Scanner in = new Scanner(System.in);
-      EventRequest er = getRequest(eventRequests);
+      EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
-        return;
-      }
-
-      System.out.println("\nId: " + er.getId());
-      System.out.println("status: " + er.getStatus());
-      System.out.println("client name: " + er.getClientName());
-      System.out.println("type: " + er.getType());
-      System.out.println("description: " + er.getDescription());
-      System.out.println("start date: " + er.getStartDate());
-      System.out.println("end date: " + er.getEndDate());
-      System.out.println("expected number of attendees: " + er.getExpectedNumber());
-      System.out.println("expected budget: " + er.getExpectedBudget());
-      System.out.println("Discount (%): " + er.getDiscountPercentage());
-      System.out.println("Financial feedback: " + er.getFeedback());
-      System.out.println("\nPrefereces: ");
-      System.out.println(er.getPreferences());
-      System.out.println();
-    }
-
-    static ArrayList<EventRequest> approve(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
         return null;
       }
-        return nextChainInCommand(activeUser, eventRequests);
+      StringBuilder sb = new StringBuilder();
+
+      sb.append("\nId: " + er.getId() + "\n");
+      sb.append("status: " + er.getStatus() + "\n");
+      sb.append("client name: " + er.getClientName() + "\n");
+      sb.append("type: " + er.getType() + "\n");
+      sb.append("description: " + er.getDescription() + "\n");
+      sb.append("start date: " + er.getStartDate() + "\n");
+      sb.append("end date: " + er.getEndDate() + "\n");
+      sb.append("expected number of attendees: " + er.getExpectedNumber() + "\n");
+      sb.append("expected budget: " + er.getExpectedBudget() + "\n");
+      sb.append("Discount (%): " + er.getDiscountPercentage() + "\n");
+      sb.append("Financial feedback: " + er.getFeedback() + "\n");
+      sb.append("\nPreferences: \n");
+      sb.append(er.getPreferences() + "\n\n");
+
+
+      return sb.toString();
     }
 
-    static ArrayList<EventRequest> updateDiscount(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      String[] authorizedStaff = {"FinancialManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
-        return null;
-      }
+    static ArrayList<EventRequest> updateDiscount(int id, String discount, ArrayList<EventRequest> eventRequests) {
 
-      EventRequest er = getRequest(eventRequests);
+      EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
         return null;
       }
@@ -282,10 +268,6 @@ class EventRequest {
         return null;
       }
 
-      Scanner in = new Scanner(System.in);
-      System.out.print("Enter new discount (%): ");
-      String discount = in.nextLine();
-
       er.setDiscountPercentage(discount);
       eventRequests.remove(er.getId()-1);
       eventRequests.add(er.getId()-1, er);
@@ -293,13 +275,9 @@ class EventRequest {
       return eventRequests;
     }
 
-    static ArrayList<EventRequest> reject(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
-        return null;
-      }
+    static ArrayList<EventRequest> reject(int id, Staff activeUser, ArrayList<EventRequest> eventRequests) {
 
-      EventRequest er = getRequest(eventRequests);
+      EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
         return null;
       }
@@ -312,17 +290,9 @@ class EventRequest {
       return eventRequests;
     }
 
-    static ArrayList<EventRequest> redirect(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-      String[] authorizedStaff = {"FinancialManager"};
-      if(!allowedUser(activeUser, authorizedStaff)) {
-        return null;
-      }
-        return nextChainInCommand(activeUser, eventRequests);
-    }
+    static ArrayList<EventRequest> nextChainInCommand(int id, Staff activeUser, ArrayList<EventRequest> eventRequests) {
 
-    static ArrayList<EventRequest> nextChainInCommand(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-
-      EventRequest er = getRequest(eventRequests);
+      EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
         return null;
       }
@@ -352,10 +322,9 @@ class EventRequest {
         return eventRequests;
     }
 
-    static void addFeedback(Staff activeUser, ArrayList<EventRequest> eventRequests) {
-        Scanner in = new Scanner(System.in);
+    static void addFeedback(int id, String feedback, ArrayList<EventRequest> eventRequests) {
 
-        EventRequest er = getRequest(eventRequests);
+        EventRequest er = getRequest(id, eventRequests);
         if(er == null) {
           return;
         }
@@ -365,8 +334,6 @@ class EventRequest {
           return;
         }
 
-        System.out.print("Enter feedback: ");
-        String feedback = in.nextLine();
         er.setFeedback(feedback);
         eventRequests.remove(er.getId()-1);
         eventRequests.add(er.getId()-1, er);
@@ -377,6 +344,9 @@ class EventRequest {
     public static void main(String[] args) {
       // Creation testing
       // Completed test gets Permission denied print. is ok.
+
+      boolean creationTest;
+      boolean methodTest;
 
       boolean[] arr = {true, false, false, true, true};
       EventRequest er = new EventRequest(1, "client", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", arr);
@@ -390,9 +360,9 @@ class EventRequest {
                 er.getPreferences().equals("decorations, breakfast,lunch,dinner, soft/hot drinks, ") && er.getId() == 1 && er.getStatus().equals("status2") &&
                     er.getFeedback() == "feedback2" && er.discountPercentage == "20") {
 
-        System.out.println("Creation test completed");
+        creationTest = true;
       } else {
-        System.out.println("Creation test failed");
+        creationTest = false;
       }
 
       // Method testing
@@ -410,14 +380,38 @@ class EventRequest {
       eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));
 
       String[] s1 = {"kakor", "elefanter", "somethign", "CustomerService"};
-      boolean shouldBeTrue1 = allowedUser(staff[0], s1);
-      boolean shouldBeFalse1 = allowedUser(staff[1], s1);
+      boolean test[] = new boolean[8];
 
-      if(shouldBeTrue1 == true && shouldBeFalse1 == false) {
-        System.out.println("Method test completed");
-      } else {
-        System.out.println("Method test failed");
+      test[0] = getRequest(1, eventRequests).getClientName().equals("Joe");
+      test[1] = getRequest(123, eventRequests) == null;
+      test[2] = allowedUser(staff[0], s1);  // function should be true
+      test[3] = !allowedUser(staff[1], s1); // function should be false
+      test[4] = list(eventRequests).equals("\nID:     Status:\n1 Created\n2 Created\n3 Created\n");
+      test[5] = view(1, eventRequests).equals("\nId: 1\nstatus: Created\nclient name: Joe\ntype: fika\ndescription: bullar och kaffe\nstart date: 5\nend date: 6\nexpected number of attendees: 20\nexpected budget: 1300\nDiscount (%): 0\nFinancial feedback: \n\nPreferences: \nsoft/hot drinks, \n\n");
+
+      nextChainInCommand(2, staff[1], eventRequests);
+      updateDiscount(2, "123", eventRequests);
+      test[6] = eventRequests.get(1).getDiscountPercentage().equals("123");
+      addFeedback(2, "final test feedback", eventRequests);
+      test[7] = eventRequests.get(1).getFeedback().equals("final test feedback");
+
+
+
+
+      for(int i = 0; i < test.length; i++) {
+        if(creationTest && !test[i]) {
+          System.out.println("Method test failed at test index: " + i);
+          return;
+        }
       }
+      System.out.println("\nTest completed without failure");
+
+
+
+
+
+
+
     }
 }
 
