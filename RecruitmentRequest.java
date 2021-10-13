@@ -30,6 +30,10 @@ class RecruitmentRequest {
         return status;
     }
 
+    void setStatus(String status) {
+        this.status = status;
+    }
+
     String getContractType() {
         return contractType;
     }
@@ -74,7 +78,7 @@ class RecruitmentRequest {
     }
 
     static void list(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
-        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant", "ProductionManager", "ServiceManager"};
         if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             return;
         }
@@ -84,9 +88,37 @@ class RecruitmentRequest {
         RecruitmentRequest temp;
         for(int i = 0; i < recruitments.size(); i++) {
             temp = recruitments.get(i);
-            System.out.println(temp.getId() + " " + temp.getStatus());
+            if((activeUser.getRole().equals("ProductionManager") || activeUser.getRole().equals("ServiceManager"))
+                && temp.getDepartment().equals(activeUser.getSubteam())) {
+                    System.out.println(temp.getId() + " " + temp.getStatus());
+            }   else if(activeUser.getRole().equals("SeniorHRManager") || activeUser.getRole().equals("HRAssistant")) {
+                System.out.println(temp.getId() + " " + temp.getStatus());
+            }
         }
         System.out.println();
+    }
+
+    static ArrayList<RecruitmentRequest> updateStatus(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
+        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            return null;
+        }
+
+        Scanner in = new Scanner(System.in);
+        RecruitmentRequest r = getRequest(recruitments);
+        if(r == null) {
+            return null;
+        }
+
+        System.out.print("Enter new status: ");
+        String status = in.nextLine();
+
+        r.setStatus(status);
+        recruitments.remove(r.getId()-1);
+        recruitments.add(r.getId()-1, r);
+      
+        System.out.println("Status updated");
+        return recruitments;
     }
     
     static RecruitmentRequest getRequest(ArrayList<RecruitmentRequest> recruitments) {
@@ -105,14 +137,14 @@ class RecruitmentRequest {
         return null;
     }
 
-    static void view(Staff activeUser, ArrayList<RecruitmentRequest> eventRequests) {
+    static void view(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
         String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
         if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             return;
         }
 
         Scanner in = new Scanner(System.in);
-        RecruitmentRequest r = getRequest(eventRequests);
+        RecruitmentRequest r = getRequest(recruitments);
         if(r == null) {
             return;
         }

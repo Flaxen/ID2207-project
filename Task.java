@@ -53,7 +53,6 @@ class Task {
     }
 
     static void list(Staff activeUser, ArrayList<Task> tasks) {
-
       // anycan needs to check tasks, no need for authorizedStaff
       if(activeUser == null) {
         System.out.println("Permission denied");

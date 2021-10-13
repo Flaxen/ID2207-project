@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 class Login {
-
   private static Staff login(String username, String password, Staff[] users) {
 
     for(int i = 0; i < users.length; i++) {
@@ -48,10 +47,10 @@ class Login {
         return "createEventRequest, logout, stop, listTasks, commands";
 
       case "SeniorCustomerService":
-        return "listEventRequest, viewEventRequest, approve, reject, logout, stop, listTasks, commands";
+        return "listEventRequests, viewEventRequest, approve, reject, logout, stop, listTasks, commands";
 
       case "FinancialManager":
-        return "listEventRequest, viewEventRequest, listFinancialRequest, viewFinancialRequest, updateFinancialRequestStatus, viewBudget, addFeedback, listTasks, logout, stop, commands";
+        return "listEventRequests, viewEventRequest, listFinancialRequests, viewFinancialRequest, updateFinancialRequestStatus, viewBudget, addFeedback, logout, stop, listTasks, commands";
 
       case "ProductionManager":
         return "listTasks, viewTask, createTask, createFinancialRequest, createRecruitmentRequest, logout, stop, commands";
@@ -63,12 +62,11 @@ class Login {
         return "listEventRequest, viewEventRequest, approve, reject, listTasks, logout, stop, commands";
 
       case "SeniorHRManager":
-        return "listRecruitmentRequest, viewRecruitmentRequest, updateRecruitmentRequest, logout, stop, commands";
+        return "listRecruitmentRequest, viewRecruitmentRequest, updateRecruitmentRequest, listTasks, logout, stop, commands";
 
       default:
         return "error: unknown role";
     }
-
   }
 
   public static void main(String[] args) {
@@ -87,6 +85,5 @@ class Login {
     } else {
       System.out.println("Test failed");
     }
-
   }
 }

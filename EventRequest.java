@@ -254,6 +254,25 @@ class EventRequest {
         return nextChainInCommand(activeUser, eventRequests);
     }
 
+    static ArrayList<EventRequest> reject(Staff activeUser, ArrayList<EventRequest> eventRequests) {
+      String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
+      if(!allowedUser(activeUser, authorizedStaff)) {
+        return null;
+      }
+
+      EventRequest er = getRequest(eventRequests);
+      if(er == null) {
+        return null;
+      }
+
+      er.setStatus("Rejected");
+      eventRequests.remove(er.getId()-1);
+      eventRequests.add(er.getId()-1, er);
+      
+      System.out.println("Rejected event request");
+      return eventRequests;
+    }
+
     static ArrayList<EventRequest> redirect(Staff activeUser, ArrayList<EventRequest> eventRequests) {
       String[] authorizedStaff = {"FinancialManager"};
       if(!allowedUser(activeUser, authorizedStaff)) {

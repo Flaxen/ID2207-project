@@ -21,24 +21,26 @@ class FullProgram {
 
   public static void main(String[] args) {
     boolean[] b = {false, false, false, false, true};
-    eventRequests.add(new EventRequest(1, "Joe", "fika", "bullar och kaffe", "5", "6", "20", "1300", b));
-    eventRequests.add(new EventRequest(2, "Emma", "fest", "partykväll", "2", "3", "100", "5000", b));
-    eventRequests.add(new EventRequest(3, "Robert", "grill", "korv och burgare", "10", "12", "10", "700", b));
+    eventRequests.add(new EventRequest(1, "Joe", "coffe", "free pastry and coffe", "5", "6", "20", "1300", b));
+    eventRequests.add(new EventRequest(2, "Emma", "party", "party night", "2", "3", "100", "5000", b));
+    eventRequests.add(new EventRequest(3, "Robert", "grill", "hot dogs and burgers", "10", "12", "10", "700", b));
 
-    tasks.add(new Task(1, eventRequests.get(1), "take photo of fika", "Photography", staff[3], 2));
-    tasks.add(new Task(2, eventRequests.get(2), "serve fika", "Waitress", staff[5], 1));
+    tasks.add(new Task(1, eventRequests.get(1), "take photo of coffe", "Photography", staff[3], 2));
+    tasks.add(new Task(2, eventRequests.get(2), "serve pastries", "Waitress", staff[5], 1));
     tasks.add(new Task(3, eventRequests.get(0), "take photo of grill", "Photography", staff[3], 0));
 
     recruitments.add(new RecruitmentRequest(1, "Full Time", "ProductionDepartment", 4, "NetworkEngineer", "connect cables"));
     recruitments.add(new RecruitmentRequest(2, "Part Time", "ServiceDepartment", 3, "Chef", "cook food"));
 
+    financialRequests.add(new FinancialRequest(1, "ProductionDepartment", eventRequests.get(1), 1000, "expensive party"));
+    financialRequests.add(new FinancialRequest(2, "ServiceDepartment", eventRequests.get(2), 750, "expensive hot dogs"));
+
     Scanner in = new Scanner(System.in);
     Staff activeUser = null;
-
     boolean run = true;
 
-    System.out.println("SEP system 1.0:\n");
-
+    System.out.println("SEP system 2.0:\n");
+    
     while(run) {
       String input = in.nextLine();
       switch(input) {
@@ -84,9 +86,15 @@ class FullProgram {
           break;
 
         case "reject":
+          EventRequest.reject(activeUser, eventRequests);
           break;
 
         case "updateFinancialRequestStatus":
+          FinancialRequest.updateStatus(activeUser, financialRequests);
+          break;
+
+        case "updateRecruitmentRequestStatus":
+          RecruitmentRequest.updateStatus(activeUser, recruitments);
           break;
 
         case "viewBudget":
@@ -110,6 +118,9 @@ class FullProgram {
             tasks.add(task);
           }
           break;
+
+        case "addPlan":
+          
 
         case "createFinancialRequest":
           FinancialRequest financialRequest = FinancialRequest.creationUI(activeUser, financialRequests.size() + 1, eventRequests);

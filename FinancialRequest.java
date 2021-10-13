@@ -26,6 +26,10 @@ class FinancialRequest {
         return status;
     }
 
+    void setStatus(String status) {
+        this.status = status;
+    }
+
     String getDepartment() {
         return department;
     }
@@ -62,7 +66,7 @@ class FinancialRequest {
     }
 
     static void list(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
-        String[] authorizedStaff = {"FinancialManager"};
+        String[] authorizedStaff = {"ProductionManager", "ServiceManager", "FinancialManager"};
         if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             return;
         }
@@ -72,7 +76,12 @@ class FinancialRequest {
         FinancialRequest temp;
         for(int i = 0; i < financialRequests.size(); i++) {
             temp = financialRequests.get(i);
-            System.out.println(temp.getId() + " " + temp.getStatus());
+            if((activeUser.getRole().equals("ProductionManager") || activeUser.getRole().equals("ServiceManager"))
+                && temp.getDepartment().equals(activeUser.getSubteam())) {
+                    System.out.println(temp.getId() + " " + temp.getStatus());
+            }   else if(activeUser.getRole().equals("FinancialManager")) {
+                System.out.println(temp.getId() + " " + temp.getStatus());
+            }
         }
         System.out.println();
     }
@@ -112,6 +121,29 @@ class FinancialRequest {
         System.out.println("required amount: " + r.getAmount());
         System.out.println("reason: " + r.getReason());
         System.out.println();
+    }
+
+    static ArrayList<FinancialRequest> updateStatus(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
+        String[] authorizedStaff = {"FinancialManager"};
+        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            return null;
+        }
+
+        Scanner in = new Scanner(System.in);
+        FinancialRequest f = getRequest(financialRequests);
+        if(f == null) {
+            return null;
+        }
+
+        System.out.print("Enter new status: ");
+        String status = in.nextLine();
+
+        f.setStatus(status);
+        financialRequests.remove(f.getId()-1);
+        financialRequests.add(f.getId()-1, f);
+      
+        System.out.println("Status updated");
+        return financialRequests;
     }
 
     public static void main(String[] args) {
