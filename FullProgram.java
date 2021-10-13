@@ -71,7 +71,7 @@ class FullProgram {
           EventRequest.view(activeUser, eventRequests);
           break;
 
-        case "listEventRequest":
+        case "listEventRequests":
           EventRequest.list(activeUser, eventRequests);
           break;
 
@@ -122,7 +122,7 @@ class FullProgram {
           FinancialRequest.list(activeUser, financialRequests);
           break;
         
-        case "viewFinancialRequests":
+        case "viewFinancialRequest":
           FinancialRequest.view(activeUser, financialRequests);
           break;
 
@@ -133,7 +133,7 @@ class FullProgram {
           }
           break;
 
-        case "listRecruitmentRequest":
+        case "listRecruitmentRequests":
           RecruitmentRequest.list(activeUser, recruitments);
           break;
         
