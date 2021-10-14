@@ -124,7 +124,17 @@ class FullProgram {
           break;
 
         case "updateFinancialRequestStatus":
-          FinancialRequest.updateStatus(activeUser, financialRequests);
+          String[] authorizedStaff = {"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          int id = EventRequest.askForId();
+
+          System.out.print("Enter new status: ");
+          String status = in.nextLine();
+
+          FinancialRequest.updateStatus(id, status, financialRequests);
           break;
 
         case "setDiscount":
@@ -141,7 +151,17 @@ class FullProgram {
           break;
 
         case "updateRecruitmentRequestStatus":
-          RecruitmentRequest.updateStatus(activeUser, recruitments);
+          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+              break;
+          }
+          //TODO: make askForId take arguments for request type
+          int id = EventRequest.askForId();
+
+          System.out.print("Enter new status: ");
+          String status = in.nextLine();
+
+          RecruitmentRequest.updateStatus(id, status, recruitments);
           break;
 
         case "addFeedback":
@@ -159,11 +179,23 @@ class FullProgram {
           break;
 
         case "listTasks":
+          if(activeUser == null) {
+            System.out.println("Permission denied");
+            break;
+          }
+
           Task.list(activeUser, tasks);
           break;
 
         case "viewTask":
-          Task.view(activeUser, tasks);
+          if(activeUser == null) {
+            System.out.println("Permission denied");
+            break;
+          }
+
+          int id = EventRequest.askForId();
+
+          Task.view(id, activeUser, tasks);
           break;
 
         case "createTask":
@@ -174,10 +206,24 @@ class FullProgram {
           break;
 
         case "addPlan":
-          Task.addPlan(activeUser, tasks);
+          if(activeUser == null) {
+            System.out.println("Permission denied");
+            break;
+          }
+
+          int id = EventRequest.askForId();
+          System.out.print("Enter plan: ");
+          String plan = in.nextLine();
+
+          Task.addPlan(id, plan, activeUser, tasks);
           break;
 
         case "createFinancialRequest":
+          String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
           FinancialRequest financialRequest = FinancialRequest.creationUI(activeUser, financialRequests.size() + 1, eventRequests);
           if(financialRequest != null) {
             financialRequests.add(financialRequest);
@@ -185,14 +231,31 @@ class FullProgram {
           break;
 
         case "listFinancialRequests":
-          FinancialRequest.list(activeUser, financialRequests);
+          String[] authorizedStaff = {"ProductionManager", "ServiceManager", "FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+              return;
+          }
+
+          System.out.println(FinancialRequest.list(activeUser, financialRequests));;
           break;
 
         case "viewFinancialRequest":
-          FinancialRequest.view(activeUser, financialRequests);
+          String[] authorizedStaff = {"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+              return;
+          }
+
+          int id = EventRequest.askForId();
+
+          System.out.println(FinancialRequest.view(id, financialRequests));
           break;
 
         case "createRecruitmentRequest":
+          String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
           RecruitmentRequest recruitment = RecruitmentRequest.creationUI(activeUser, recruitments.size() + 1);
           if(recruitment != null) {
             recruitments.add(recruitment);
@@ -200,11 +263,23 @@ class FullProgram {
           break;
 
         case "listRecruitmentRequests":
+          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant", "ProductionManager", "ServiceManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+              break;
+          }
+
           RecruitmentRequest.list(activeUser, recruitments);
           break;
 
         case "viewRecruitmentRequest":
-          RecruitmentRequest.view(activeUser, recruitments);
+          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+              return;
+          }
+
+          int id = EventRequest.askForId();
+
+          RecruitmentRequest.view(id, recruitments);
           break;
 
         default:

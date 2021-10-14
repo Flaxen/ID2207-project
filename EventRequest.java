@@ -4,7 +4,6 @@ import java.util.ArrayList;
 class EventRequest {
 
     private int id;
-
     private String clientName;
     private String type;
     private String description;
@@ -101,9 +100,9 @@ class EventRequest {
         this.feedback = feedback;
     }
 
-    int askForId() {
+    static int askForId() {
       Scanner in = new Scanner(System.in);
-      System.out.print("Enter request Id: ");
+      System.out.print("Enter event request Id: ");
       int id = in.nextInt();
       return id;
     }
@@ -188,7 +187,6 @@ class EventRequest {
     }
 
     static EventRequest getRequest(int id, ArrayList<EventRequest> eventRequests) {
-
       EventRequest er = null;
       EventRequest temp = null;
       for(int i = 0; i < eventRequests.size(); i++) {
@@ -252,7 +250,6 @@ class EventRequest {
       sb.append("\nPreferences: \n");
       sb.append(er.getPreferences() + "\n\n");
 
-
       return sb.toString();
     }
 
@@ -291,7 +288,6 @@ class EventRequest {
     }
 
     static ArrayList<EventRequest> nextChainInCommand(int id, Staff activeUser, ArrayList<EventRequest> eventRequests) {
-
       EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
         return null;
@@ -395,9 +391,6 @@ class EventRequest {
       addFeedback(2, "final test feedback", eventRequests);
       test[7] = eventRequests.get(1).getFeedback().equals("final test feedback");
 
-
-
-
       for(int i = 0; i < test.length; i++) {
         if(creationTest && !test[i]) {
           System.out.println("Method test failed at test index: " + i);
@@ -405,13 +398,6 @@ class EventRequest {
         }
       }
       System.out.println("\nTest completed without failure");
-
-
-
-
-
-
-
     }
 }
 

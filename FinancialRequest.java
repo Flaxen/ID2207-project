@@ -26,10 +26,6 @@ class FinancialRequest {
         return status;
     }
 
-    void setStatus(String status) {
-        this.status = status;
-    }
-
     String getDepartment() {
         return department;
     }
@@ -46,14 +42,14 @@ class FinancialRequest {
         return reason;
     }
 
-    static FinancialRequest creationUI(Staff activeUser, int id, ArrayList<EventRequest> eventRequests) {
-        String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-          return null;
-        }
+    void setStatus(String status) {
+        this.status = status;
+    }
 
+    static FinancialRequest creationUI(Staff activeUser, int id, ArrayList<EventRequest> eventRequests) {
+        int eventId = EventRequest.askForId();
         Scanner in = new Scanner(System.in);
-        EventRequest eventRequest = EventRequest.getRequest(eventRequests);
+        EventRequest eventRequest = EventRequest.getRequest(eventId, eventRequests);
 
         System.out.print("Enter reason: ");
         String reason = in.nextLine();
@@ -65,31 +61,23 @@ class FinancialRequest {
         return new FinancialRequest(id, activeUser.getSubteam(), eventRequest, amount, reason);
     }
 
-    static void list(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
-        String[] authorizedStaff = {"ProductionManager", "ServiceManager", "FinancialManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-            return;
-        }
-
-        System.out.println("\nID:     Status:");
+    static String list(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
+        String out = "\nID:     Status:\n";
 
         FinancialRequest temp;
         for(int i = 0; i < financialRequests.size(); i++) {
             temp = financialRequests.get(i);
             if((activeUser.getRole().equals("ProductionManager") || activeUser.getRole().equals("ServiceManager"))
                 && temp.getDepartment().equals(activeUser.getSubteam())) {
-                    System.out.println(temp.getId() + " " + temp.getStatus());
+                    out = out + temp.getId() + " " + temp.getStatus() + "\n";
             }   else if(activeUser.getRole().equals("FinancialManager")) {
-                System.out.println(temp.getId() + " " + temp.getStatus());
+                out = out + temp.getId() + " " + temp.getStatus() + "\n";
             }
         }
-        System.out.println();
+        return out;
     }
 
-    static FinancialRequest getRequest(ArrayList<FinancialRequest> financialRequests) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter request Id: ");
-        int id = in.nextInt();
+    static FinancialRequest getRequest(int id, ArrayList<FinancialRequest> financialRequests) {
 
         FinancialRequest f = null;
         for(int i = 0; i < financialRequests.size(); i++) {
@@ -102,41 +90,29 @@ class FinancialRequest {
         return null;
     }
 
-    static void view(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
-        String[] authorizedStaff = {"FinancialManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-            return;
-        }
+    static String view(int id, ArrayList<FinancialRequest> financialRequests) {
 
-        Scanner in = new Scanner(System.in);
-        FinancialRequest r = getRequest(financialRequests);
+        FinancialRequest r = getRequest(id, financialRequests);
         if(r == null) {
-            return;
-        }
-
-        System.out.println("\nId: " + r.getId());
-        System.out.println("status: " + r.getStatus());
-        System.out.println("department: " + r.getDepartment());
-        System.out.println("related event request id: " + r.getEventRequest().getId());
-        System.out.println("required amount: " + r.getAmount());
-        System.out.println("reason: " + r.getReason());
-        System.out.println();
-    }
-
-    static ArrayList<FinancialRequest> updateStatus(Staff activeUser, ArrayList<FinancialRequest> financialRequests) {
-        String[] authorizedStaff = {"FinancialManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             return null;
         }
+        StringBuilder sb = new StringBuilder();
 
-        Scanner in = new Scanner(System.in);
-        FinancialRequest f = getRequest(financialRequests);
+        sb.append("\nId: " + r.getId() + "\n");
+        sb.append("status: " + r.getStatus() + "\n");
+        sb.append("department: " + r.getDepartment() + "\n");
+        sb.append("related event request id: " + r.getEventRequest().getId() + "\n");
+        sb.append("required amount: " + r.getAmount() + "\n");
+        sb.append("reason: " + r.getReason() + "\n\n");
+
+        return sb.toString();
+    }
+
+    static ArrayList<FinancialRequest> updateStatus(int id, String status, ArrayList<FinancialRequest> financialRequests) {
+        FinancialRequest f = getRequest(id, financialRequests);
         if(f == null) {
             return null;
         }
-
-        System.out.print("Enter new status: ");
-        String status = in.nextLine();
 
         f.setStatus(status);
         financialRequests.remove(f.getId()-1);
@@ -149,16 +125,35 @@ class FinancialRequest {
     public static void main(String[] args) {
         Staff s = new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment");
         EventRequest ev = new EventRequest(1, "clientName", "type", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", null);
+        boolean creationTest;
+        ArrayList<FinancialRequest> financialRequests = new ArrayList<FinancialRequest>();
+        financialRequests.add(new FinancialRequest(1, "ProductionDepartment", ev, 1000, "expensive party"));
+        financialRequests.add(new FinancialRequest(2, "ServiceDepartment", ev, 750, "expensive hot dogs"));
         FinancialRequest f = new FinancialRequest(1, s.getSubteam(), ev, 500, "reason");
 
         f.setStatus("status2");
-
+        
         if(f.getId() == 1 && f.getDepartment().equals("ProductionDepartment") && f.getEventRequest().getId() == 1 &&
             f.getAmount() == 500 && f.getReason().equals("reason") && f.getStatus().equals("status2")) {
-
-            System.out.println("Test completed");
+            creationTest = true;
         } else {
-            System.out.println("Test failed");
+            creationTest = false;
         }
+
+        // method test
+        boolean[] test = new boolean[4];
+        test[0] = list(s, financialRequests).equals("\nID:     Status:\n1 Created\n");
+        test[1] = getRequest(1, financialRequests).getDepartment().equals("ProductionDepartment");
+        test[2] = view(1, financialRequests).equals("\nId: 1\nstatus: Created\ndepartment: ProductionDepartment\nrelated event request id: 1\nrequired amount: 1000\nreason: expensive party\n\n");
+        test[3] = updateStatus(1, "test status", financialRequests).get(0).getStatus().equals("test status");
+    
+
+        for(int i = 0; i < test.length; i++) {
+            if(creationTest && !test[i]) {
+              System.out.println("Method test failed at test index: " + i);
+              return;
+            }
+          }
+          System.out.println("\nTest completed without failure");
     }
 }

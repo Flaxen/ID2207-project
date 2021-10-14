@@ -6,7 +6,6 @@ class Staff {
   private String role;
   private String subTeam;
 
-
   Staff(String name, String username, String password, String role, String subTeam) {
     this.name = name;
     this.username = username;
@@ -43,7 +42,5 @@ class Staff {
       System.out.println("Test completed");
     } else {
       System.out.println("Test failed");
-
     }  }
-
 }

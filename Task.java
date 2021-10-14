@@ -62,31 +62,22 @@ class Task {
         return priority;
     }
 
-    static void list(Staff activeUser, ArrayList<Task> tasks) {
-      // anycan needs to check tasks, no need for authorizedStaff
-      if(activeUser == null) {
-        System.out.println("Permission denied");
-        return;
-      }
+    static String list(Staff activeUser, ArrayList<Task> tasks) {
 
-      System.out.println("\nID:  Status:  Priority:  Sender:");
+      String out = "\nID:  Status:  Priority:  Sender:\n";
 
       Task temp;
       for(int i = 0; i < tasks.size(); i++) {
 
         temp = tasks.get(i);
         if(activeUser.getRole().equals(temp.getSender().getRole()) || activeUser.getSubteam().equals(temp.getSubteam())) {
-          System.out.println(temp.getId() + " " + temp.getStatus() + " " + temp.getPriority() + " " + temp.getSender().getName());
+          out = out + temp.getId() + " " + temp.getStatus() + " " + temp.getPriority() + " " + temp.getSender().getName() + "\n";
         }
-
       }
-      System.out.println();
+      return out;
     }
 
-    static Task getTask(ArrayList<Task> tasks) {
-      Scanner in = new Scanner(System.in);
-      System.out.print("Enter task Id: ");
-      int id = in.nextInt();
+    static Task getTask(int id, ArrayList<Task> tasks) {      
 
       Task task = null;
       Task temp = null;
@@ -101,14 +92,10 @@ class Task {
       return null;
     }
 
-    static void view(Staff activeUser, ArrayList<Task> tasks) {
+    static void view(int id, Staff activeUser, ArrayList<Task> tasks) {
       // anycan needs to check tasks, no need for authorizedStaff
-      if(activeUser == null) {
-        System.out.println("Permission denied");
-        return;
-      }
-
-      Task task = getTask(tasks);
+      
+      Task task = getTask(id, tasks);
       if(task == null) {
         return;
       }
@@ -129,12 +116,9 @@ class Task {
 
     }
 
-    static ArrayList<Task> addPlan(Staff activeUser, ArrayList<Task> tasks) {
-      if(activeUser == null) {
-          return null;
-      }
-
-      Task task = getTask(tasks);
+    static ArrayList<Task> addPlan(int id, String plan, Staff activeUser, ArrayList<Task> tasks) {
+      
+      Task task = getTask(id, tasks);
       if(task == null) {
         return null;
       }
@@ -143,10 +127,6 @@ class Task {
         System.out.println("Permission denied");
         return null;
       }
-
-      Scanner in = new Scanner(System.in);
-      System.out.print("Enter plan: ");
-      String plan = in.nextLine();
 
       task.setPlan(plan);
       tasks.remove(task.getId() - 1);
@@ -167,7 +147,9 @@ class Task {
         int priority;
 
         Scanner in = new Scanner(System.in);
-        eventRequest = EventRequest.getRequest(eventRequests);
+        System.out.print("Enter event request id: ");
+        int eventid = in.nextInt();
+        eventRequest = EventRequest.getRequest(eventid, eventRequests);
 
         if(eventRequest == null) {
             return null;
@@ -188,11 +170,16 @@ class Task {
     }
 
     public static void main(String[] args) {
-        boolean[] b = {true, false, true, true, false};
+        Staff s = new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment");
+        Staff s2 = new Staff("Tobias", "ph1", "123", "Photography", "Photography");
         Task t = new Task(1, new EventRequest(1, "bob", "fika", "description", "startDate", "endDate",
         "expectedNumber", "expectedBudget", b),
-        "description", "subTeam", new Staff("name", "username", "password", "role", "subTeam"), 47);
+        "description", "Photography", new Staff("name", "username", "password", "role", "subTeam"), 47);
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        tasks.add(t);
 
+        boolean[] b = {true, false, true, true, false};
+        
         t.setStatus("status2");
         t.setPlan("plan2");
 
@@ -203,5 +190,8 @@ class Task {
         else {
             System.out.println("Test failed");
         }
+
+        boolean[] test = new boolean[4];
+        test[0] = list(s2, tasks).equals("\nID:  Status:  Priority:  Sender:\n1 status2 47 name");
     }
 }

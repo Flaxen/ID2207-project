@@ -14,7 +14,7 @@ class RecruitmentRequest {
     RecruitmentRequest(int id, String contractType, String department,
         int experience, String jobTitle, String description) {
             this.id = id;
-            this.status = "created";
+            this.status = "Created";
             this.contractType = contractType;
             this.department = department;
             this.experience = experience;
@@ -55,10 +55,6 @@ class RecruitmentRequest {
     }
 
     static RecruitmentRequest creationUI(Staff activeUser, int id) {
-        String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-          return null;
-        }
 
         Scanner in = new Scanner(System.in);
         System.out.print("Enter contract type (Full time / Part time): ");
@@ -77,41 +73,29 @@ class RecruitmentRequest {
         return new RecruitmentRequest(id, contractType, activeUser.getSubteam(), experience, jobTitle, description);
     }
 
-    static void list(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
-        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant", "ProductionManager", "ServiceManager"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-            return;
-        }
+    static String list(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
 
-        System.out.println("\nID:     Status:");
+        String out = "\nID:     Status:\n";
 
         RecruitmentRequest temp;
         for(int i = 0; i < recruitments.size(); i++) {
             temp = recruitments.get(i);
             if((activeUser.getRole().equals("ProductionManager") || activeUser.getRole().equals("ServiceManager"))
                 && temp.getDepartment().equals(activeUser.getSubteam())) {
-                    System.out.println(temp.getId() + " " + temp.getStatus());
+                    out = out + temp.getId() + " " + temp.getStatus() + "\n";
             }   else if(activeUser.getRole().equals("SeniorHRManager") || activeUser.getRole().equals("HRAssistant")) {
-                System.out.println(temp.getId() + " " + temp.getStatus());
+                    out = out + temp.getId() + " " + temp.getStatus() + "\n";
             }
         }
-        System.out.println();
+        return out;
     }
 
-    static ArrayList<RecruitmentRequest> updateStatus(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
-        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-            return null;
-        }
-
-        Scanner in = new Scanner(System.in);
-        RecruitmentRequest r = getRequest(recruitments);
+    static ArrayList<RecruitmentRequest> updateStatus(int id, String status, ArrayList<RecruitmentRequest> recruitments) {
+        
+        RecruitmentRequest r = getRequest(id, recruitments);
         if(r == null) {
             return null;
         }
-
-        System.out.print("Enter new status: ");
-        String status = in.nextLine();
 
         r.setStatus(status);
         recruitments.remove(r.getId()-1);
@@ -121,11 +105,8 @@ class RecruitmentRequest {
         return recruitments;
     }
 
-    static RecruitmentRequest getRequest(ArrayList<RecruitmentRequest> recruitments) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("Enter request Id: ");
-        int id = in.nextInt();
-
+    static RecruitmentRequest getRequest(int id, ArrayList<RecruitmentRequest> recruitments) {
+    
         RecruitmentRequest r = null;
         for(int i = 0; i < recruitments.size(); i++) {
             r = recruitments.get(i);
@@ -137,39 +118,55 @@ class RecruitmentRequest {
         return null;
     }
 
-    static void view(Staff activeUser, ArrayList<RecruitmentRequest> recruitments) {
-        String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
-        if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-            return;
-        }
+    static String view(int id, ArrayList<RecruitmentRequest> recruitments) {
 
-        Scanner in = new Scanner(System.in);
-        RecruitmentRequest r = getRequest(recruitments);
+        RecruitmentRequest r = getRequest(id, recruitments);
         if(r == null) {
-            return;
+            return null;
         }
 
-        System.out.println("\nId: " + r.getId());
-        System.out.println("status: " + r.getStatus());
-        System.out.println("conctract type: " + r.getContractType());
-        System.out.println("department: " + r.getDepartment());
-        System.out.println("required years of experience: " + r.getExperience());
-        System.out.println("job title: " + r.getJobTitle());
-        System.out.println("description: " + r.getDescription());
-        System.out.println();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nId: " + r.getId() + "\n");
+        sb.append("status: " + r.getStatus() + "\n");
+        sb.append("contract type: " + r.getContractType() + "\n");
+        sb.append("department: " + r.getDepartment() + "\n");
+        sb.append("required years of experience: " + r.getExperience() + "\n");
+        sb.append("job title: " + r.getJobTitle() + "\n");
+        sb.append("description: " + r.getDescription() + "\n\n");
+
+        return sb.toString();
     }
 
     public static void main(String[] args) {
         Staff s = new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment");
         RecruitmentRequest r = new RecruitmentRequest(1, "contractType", s.getSubteam(), 5, "jobTitle", "description");
+        boolean creationTest;
+        ArrayList<RecruitmentRequest> recruitments = new ArrayList<RecruitmentRequest>();
+        recruitments.add(new RecruitmentRequest(1, "Full Time", "ProductionDepartment", 4, "NetworkEngineer", "connect cables"));
+        recruitments.add(new RecruitmentRequest(2, "Part Time", "ServiceDepartment", 3, "Chef", "cook food"));
 
         r.setStatus("status2");
 
         if(r.getId() == 1 && r.getContractType().equals("contractType") && r.getDepartment().equals("ProductionDepartment") &&
-            r.getExperience() == 5 && r.getJobTitle().equals("jobTitle") && r.getDescription().equals("description") && r.getStatus("status2")) {
-                System.out.println("Test completed");
+            r.getExperience() == 5 && r.getJobTitle().equals("jobTitle") && r.getDescription().equals("description") && r.getStatus().equals("status2")) {
+                creationTest = true;
             } else {
-                System.out.println("Test failed");
+                creationTest = false;
+        }
+
+        boolean[] test = new boolean[4];
+        test[0] = list(s, recruitments).equals("\nID:     Status:\n1 Created\n");
+        test[1] = updateStatus(1, "test status", recruitments).get(0).getStatus().equals("test status");
+        test[2] = getRequest(1, recruitments).getDepartment().equals("ProductionDepartment");
+        test[3] = view(1, recruitments).equals("\nId: 1\nstatus: test status\ncontract type: Full Time\ndepartment: ProductionDepartment\nrequired years of experience: 4\njob title: NetworkEngineer\ndescription: connect cables\n\n");
+    
+        for(int i = 0; i < test.length; i++) {
+            if(creationTest && !test[i]) {
+              System.out.println("Method test failed at test index: " + i);
+              return;
             }
+          }
+          System.out.println("\nTest completed without failure");
     }
 }
