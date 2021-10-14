@@ -94,7 +94,7 @@ class FinancialRequest {
 
         FinancialRequest r = getRequest(id, financialRequests);
         if(r == null) {
-            return null;
+            return "";
         }
         StringBuilder sb = new StringBuilder();
 
@@ -132,7 +132,7 @@ class FinancialRequest {
         FinancialRequest f = new FinancialRequest(1, s.getSubteam(), ev, 500, "reason");
 
         f.setStatus("status2");
-        
+
         if(f.getId() == 1 && f.getDepartment().equals("ProductionDepartment") && f.getEventRequest().getId() == 1 &&
             f.getAmount() == 500 && f.getReason().equals("reason") && f.getStatus().equals("status2")) {
             creationTest = true;
@@ -146,7 +146,7 @@ class FinancialRequest {
         test[1] = getRequest(1, financialRequests).getDepartment().equals("ProductionDepartment");
         test[2] = view(1, financialRequests).equals("\nId: 1\nstatus: Created\ndepartment: ProductionDepartment\nrelated event request id: 1\nrequired amount: 1000\nreason: expensive party\n\n");
         test[3] = updateStatus(1, "test status", financialRequests).get(0).getStatus().equals("test status");
-    
+
 
         for(int i = 0; i < test.length; i++) {
             if(creationTest && !test[i]) {

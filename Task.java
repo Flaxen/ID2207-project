@@ -77,7 +77,7 @@ class Task {
       return out;
     }
 
-    static Task getTask(int id, ArrayList<Task> tasks) {      
+    static Task getTask(int id, ArrayList<Task> tasks) {
 
       Task task = null;
       Task temp = null;
@@ -92,32 +92,36 @@ class Task {
       return null;
     }
 
-    static void view(int id, Staff activeUser, ArrayList<Task> tasks) {
+    static String view(int id, Staff activeUser, ArrayList<Task> tasks) {
       // anycan needs to check tasks, no need for authorizedStaff
-      
+
       Task task = getTask(id, tasks);
       if(task == null) {
-        return;
+        return "";
       }
 
+      StringBuilder sb = new StringBuilder();
+
       if(activeUser.getRole().equals(task.getSender().getRole()) || activeUser.getSubteam().equals(task.getSubteam())) {
-        System.out.println("\nId: " + task.getId());
-        System.out.println("Related event request Id: " + task.getEventRequest().getId());
-        System.out.println("Description: " + task.getDescription());
-        System.out.println("Assigned SubTeam: " + task.getSubteam());
-        System.out.println("Sender: " + task.getSender().getName());
-        System.out.println("Priority: " + task.getPriority());           // 0:high, 1:medium, 2:low
-        System.out.println("Status: " + task.getStatus());
-        System.out.println("Plan: " + task.getPlan());
+        sb.append("\nId: " + task.getId() + "\n");
+        sb.append("Related event request Id: " + task.getEventRequest().getId() + "\n");
+        sb.append("Description: " + task.getDescription() + "\n");
+        sb.append("Assigned SubTeam: " + task.getSubteam() + "\n");
+        sb.append("Sender: " + task.getSender().getName() + "\n");
+        sb.append("Priority: " + task.getPriority() + "\n");           // 0:high, 1:medium, 2:low
+        sb.append("Status: " + task.getStatus() + "\n");
+        sb.append("Plan: " + task.getPlan() + "\n\n");
 
       } else {
         System.out.println("Permission denied");
       }
 
+      return sb.toString();
+
     }
 
     static ArrayList<Task> addPlan(int id, String plan, Staff activeUser, ArrayList<Task> tasks) {
-      
+
       Task task = getTask(id, tasks);
       if(task == null) {
         return null;
@@ -148,7 +152,7 @@ class Task {
 
         Scanner in = new Scanner(System.in);
         System.out.print("Enter event request id: ");
-        int eventid = in.nextInt();
+        int eventid = Integer.parseInt(in.nextLine());
         eventRequest = EventRequest.getRequest(eventid, eventRequests);
 
         if(eventRequest == null) {
@@ -172,26 +176,55 @@ class Task {
     public static void main(String[] args) {
         Staff s = new Staff("Jack", "pm1", "123", "ProductionManager", "ProductionDepartment");
         Staff s2 = new Staff("Tobias", "ph1", "123", "Photography", "Photography");
-        Task t = new Task(1, new EventRequest(1, "bob", "fika", "description", "startDate", "endDate",
-        "expectedNumber", "expectedBudget", b),
+        boolean[] b = {true, false, true, true, false};
+        Task t = new Task(1, new EventRequest(1, "bob", "fika", "description", "startDate", "endDate", "expectedNumber", "expectedBudget", b),
         "description", "Photography", new Staff("name", "username", "password", "role", "subTeam"), 47);
         ArrayList<Task> tasks = new ArrayList<Task>();
         tasks.add(t);
 
-        boolean[] b = {true, false, true, true, false};
-        
+
         t.setStatus("status2");
         t.setPlan("plan2");
 
+        boolean creationTest;
+
         if(t.getId() == 1 && t.getEventRequest().getId() == 1 && t.getDescription().equals("description") && t.getPlan().equals("plan2") &&
             t.getSubteam().equals("subTeam") && t.getSender().getName().equals("name") && t.getPriority() == 47 && t.getStatus().equals("status2")) {
-                System.out.println("Test completed");
+                creationTest = true;
             }
         else {
-            System.out.println("Test failed");
+            creationTest = false;
         }
 
         boolean[] test = new boolean[4];
         test[0] = list(s2, tasks).equals("\nID:  Status:  Priority:  Sender:\n1 status2 47 name");
+        test[1] = getTask(1, tasks).getDescription().equals("description");
+        test[2] = view(1, s2, tasks).equals("\nId: 1\nRelated event request Id: 1\nDescription: description\nAssigned SubTeam: Photography\nSender: name\nPriority: 47\nStatus: status2\nPlan: plan2\n\n");
+
+        for(int i = 0; i < test.length; i++) {
+            if(creationTest && !test[i]) {
+              System.out.println("Method test failed at test index: " + i);
+              return;
+            }
+          }
+          System.out.println("\nTest completed without failure");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

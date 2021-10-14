@@ -38,6 +38,9 @@ class FullProgram {
     Scanner in = new Scanner(System.in);
     Staff activeUser = null;
     boolean run = true;
+    String[] authorizedStaff;
+    int id;
+    String status;
 
     System.out.println("SEP system 0.2:\n");
 
@@ -70,112 +73,112 @@ class FullProgram {
           break;
 
         case "viewEventRequest":
-          String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
+          authorizedStaff = new String[]{"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
 
           System.out.println(EventRequest.view(id, eventRequests));
           break;
 
         case "listEventRequests":
-          String[] authorizedStaff = {"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
+          authorizedStaff = new String[]{"SeniorCustomerService", "FinancialManager", "AdministrationManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
 
-          System.out.println(EventRequest.list(id, eventRequests));
+          System.out.println(EventRequest.list(eventRequests));
           System.out.println();
           break;
 
         case "redirect":
-          String[] authorizedStaff = {"FinancialManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
-            return null;
+          authorizedStaff = new String[]{"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
           }
 
-          Int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
 
-          EventRequest.redirect(id, activeUser, eventRequests);
+          EventRequest.nextChainInCommand(id, activeUser, eventRequests);
           break;
 
         case "approve":
-          String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
-            return null;
+          authorizedStaff = new String[]{"SeniorCustomerService", "AdministrationManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
 
           EventRequest.nextChainInCommand(id, activeUser, eventRequests);
           break;
 
         case "reject":
-          String[] authorizedStaff = {"SeniorCustomerService", "AdministrationManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
-            return null;
-          }
-
-          int id = EventRequest.askForId();
-
-          EventRequest.nextChainInCommand(id, activeUser, eventRequests);
-          break;
-
-        case "updateFinancialRequestStatus":
-          String[] authorizedStaff = {"FinancialManager"};
+          authorizedStaff = new String[]{"SeniorCustomerService", "AdministrationManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
+
+          EventRequest.reject(id, activeUser, eventRequests);
+          break;
+
+        case "updateFinancialRequestStatus":
+          authorizedStaff = new String[]{"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
+            break;
+          }
+
+          id = EventRequest.askForId("financial request");
 
           System.out.print("Enter new status: ");
-          String status = in.nextLine();
+          status = in.nextLine();
 
           FinancialRequest.updateStatus(id, status, financialRequests);
           break;
 
         case "setDiscount":
-          String[] authorizedStaff = {"FinancialManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
+          authorizedStaff = new String[]{"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
           System.out.print("Enter new discount (%): ");
           String discount = in.nextLine();
 
-          EventRequest.updateDiscount(id, discount, activeUser, eventRequests);
+          EventRequest.updateDiscount(id, discount, eventRequests);
           break;
 
         case "updateRecruitmentRequestStatus":
-          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+          authorizedStaff = new String[]{"SeniorHRManager", "HRAssistant"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
               break;
           }
-          //TODO: make askForId take arguments for request type
-          int id = EventRequest.askForId();
+
+          id = EventRequest.askForId("recruitment request");
 
           System.out.print("Enter new status: ");
-          String status = in.nextLine();
+          status = in.nextLine();
 
           RecruitmentRequest.updateStatus(id, status, recruitments);
           break;
 
         case "addFeedback":
-          String[] authorizedStaff = {"FinancialManager"};
-          if(!allowedUser(activeUser, authorizedStaff)) {
+          authorizedStaff = new String[]{"FinancialManager"};
+          if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("event request");
 
           System.out.print("Enter feedback: ");
           String feedback = in.nextLine();
 
-          EventRequest.addFeedback(id, feedback, activeUser, eventRequests);
+          EventRequest.addFeedback(id, feedback, eventRequests);
           break;
 
         case "listTasks":
@@ -184,7 +187,7 @@ class FullProgram {
             break;
           }
 
-          Task.list(activeUser, tasks);
+          System.out.println(Task.list(activeUser, tasks));
           break;
 
         case "viewTask":
@@ -193,9 +196,9 @@ class FullProgram {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("task");
 
-          Task.view(id, activeUser, tasks);
+          System.out.println(Task.view(id, activeUser, tasks));
           break;
 
         case "createTask":
@@ -211,7 +214,7 @@ class FullProgram {
             break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("task");
           System.out.print("Enter plan: ");
           String plan = in.nextLine();
 
@@ -219,7 +222,7 @@ class FullProgram {
           break;
 
         case "createFinancialRequest":
-          String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
+          authorizedStaff = new String[]{"ServiceManager" , "ProductionManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
@@ -231,27 +234,27 @@ class FullProgram {
           break;
 
         case "listFinancialRequests":
-          String[] authorizedStaff = {"ProductionManager", "ServiceManager", "FinancialManager"};
+          authorizedStaff = new String[]{"ProductionManager", "ServiceManager", "FinancialManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-              return;
+              break;
           }
 
           System.out.println(FinancialRequest.list(activeUser, financialRequests));;
           break;
 
         case "viewFinancialRequest":
-          String[] authorizedStaff = {"FinancialManager"};
+          authorizedStaff = new String[]{"FinancialManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-              return;
+              break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("financial request");
 
           System.out.println(FinancialRequest.view(id, financialRequests));
           break;
 
         case "createRecruitmentRequest":
-          String[] authorizedStaff = {"ServiceManager" , "ProductionManager"};
+          authorizedStaff = new String[]{"ServiceManager" , "ProductionManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
             break;
           }
@@ -263,23 +266,23 @@ class FullProgram {
           break;
 
         case "listRecruitmentRequests":
-          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant", "ProductionManager", "ServiceManager"};
+          authorizedStaff = new String[]{"SeniorHRManager", "HRAssistant", "ProductionManager", "ServiceManager"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
               break;
           }
 
-          RecruitmentRequest.list(activeUser, recruitments);
+          System.out.println(RecruitmentRequest.list(activeUser, recruitments));
           break;
 
         case "viewRecruitmentRequest":
-          String[] authorizedStaff = {"SeniorHRManager", "HRAssistant"};
+          authorizedStaff = new String[]{"SeniorHRManager", "HRAssistant"};
           if(!EventRequest.allowedUser(activeUser, authorizedStaff)) {
-              return;
+              break;
           }
 
-          int id = EventRequest.askForId();
+          id = EventRequest.askForId("recruitment request");
 
-          RecruitmentRequest.view(id, recruitments);
+          System.out.println(RecruitmentRequest.view(id, recruitments));
           break;
 
         default:

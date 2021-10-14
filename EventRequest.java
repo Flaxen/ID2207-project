@@ -100,9 +100,9 @@ class EventRequest {
         this.feedback = feedback;
     }
 
-    static int askForId() {
+    static int askForId(String type) {
       Scanner in = new Scanner(System.in);
-      System.out.print("Enter event request Id: ");
+      System.out.print("Enter "+ type +" Id: ");
       int id = in.nextInt();
       return id;
     }
@@ -125,7 +125,7 @@ class EventRequest {
       String tempIn;
       Scanner in = new Scanner(System.in);
 
-      System.out.print("Client name:");
+      System.out.print("Client name: ");
       clientName = in.nextLine();
 
       System.out.print("Event type: ");
@@ -181,7 +181,7 @@ class EventRequest {
       if(tempIn.toLowerCase().equals("yes") || tempIn.toLowerCase().equals("y")) {
         preferencesBool[4] = true;
       }
-      System.out.println("EventRequest created");
+      System.out.println("EventRequest created\n");
 
       return new EventRequest(id, clientName, type, description, startDate, endDate, expectedNumber, expectedBudget, preferencesBool);
     }
@@ -232,7 +232,7 @@ class EventRequest {
 
       EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
-        return null;
+        return "";
       }
       StringBuilder sb = new StringBuilder();
 
@@ -277,6 +277,14 @@ class EventRequest {
       EventRequest er = getRequest(id, eventRequests);
       if(er == null) {
         return null;
+      }
+
+      if(activeUser.getRole().equals("SeniorCustomerService") && !er.getStatus().equals("Created")) {
+        System.out.println("Permission denied, wrong status");
+        return eventRequests;
+      } else if(activeUser.getRole().equals("AdministrationManager") && !er.getStatus().equals("Redirected to Administration Manager")) {
+        System.out.println("Permission denied, wrong status");
+        return eventRequests;
       }
 
       er.setStatus("Rejected");

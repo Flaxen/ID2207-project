@@ -91,7 +91,7 @@ class RecruitmentRequest {
     }
 
     static ArrayList<RecruitmentRequest> updateStatus(int id, String status, ArrayList<RecruitmentRequest> recruitments) {
-        
+
         RecruitmentRequest r = getRequest(id, recruitments);
         if(r == null) {
             return null;
@@ -106,7 +106,7 @@ class RecruitmentRequest {
     }
 
     static RecruitmentRequest getRequest(int id, ArrayList<RecruitmentRequest> recruitments) {
-    
+
         RecruitmentRequest r = null;
         for(int i = 0; i < recruitments.size(); i++) {
             r = recruitments.get(i);
@@ -122,7 +122,7 @@ class RecruitmentRequest {
 
         RecruitmentRequest r = getRequest(id, recruitments);
         if(r == null) {
-            return null;
+            return "";
         }
 
         StringBuilder sb = new StringBuilder();
@@ -160,7 +160,7 @@ class RecruitmentRequest {
         test[1] = updateStatus(1, "test status", recruitments).get(0).getStatus().equals("test status");
         test[2] = getRequest(1, recruitments).getDepartment().equals("ProductionDepartment");
         test[3] = view(1, recruitments).equals("\nId: 1\nstatus: test status\ncontract type: Full Time\ndepartment: ProductionDepartment\nrequired years of experience: 4\njob title: NetworkEngineer\ndescription: connect cables\n\n");
-    
+
         for(int i = 0; i < test.length; i++) {
             if(creationTest && !test[i]) {
               System.out.println("Method test failed at test index: " + i);

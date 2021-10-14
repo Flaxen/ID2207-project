@@ -45,7 +45,7 @@ class Login {
         return "createEventRequest, logout, stop, viewTask, listTasks, commands";
 
       case "SeniorCustomerService":
-        return "listEventRequests, viewEventRequest, approve, reject, createTask, logout, stop, viewTask listTasks, commands";
+        return "listEventRequests, viewEventRequest, approve, reject, createTask, logout, stop, viewTask, listTasks, commands";
 
       case "FinancialManager":
         return "listEventRequests, viewEventRequest, listFinancialRequests, viewFinancialRequest, updateFinancialRequestStatus, addFeedback, setDiscount, logout, stop, viewTask, listTasks, commands";
