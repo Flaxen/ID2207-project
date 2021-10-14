@@ -8,6 +8,7 @@ class Login {
         if(users[i].getPassword().equals(password)) {
           // correct password
           System.out.println("Logged in");
+          System.out.println("Available Commands: " + getCommands(users[i]));
           return users[i];
         } else {
           // wrong password

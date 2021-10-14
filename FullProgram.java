@@ -42,7 +42,8 @@ class FullProgram {
     int id;
     String status;
 
-    System.out.println("SEP system 0.2:\n");
+    System.out.println("SEP system 0.2:");
+    System.out.println("Available Commands: " + Login.getCommands(null) + "\n");
 
     while(run) {
       String input = in.nextLine();
