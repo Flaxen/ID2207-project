@@ -25,6 +25,8 @@ class FullProgram {
     eventRequests.add(new EventRequest(2, "Emma", "party", "party night", "2", "3", "100", "5000", b));
     eventRequests.add(new EventRequest(3, "Robert", "grill", "hot dogs and burgers", "10", "12", "10", "700", b));
 
+    eventRequests.get(2).setStatus("Redirected to Financial Manager");
+
     tasks.add(new Task(1, eventRequests.get(1), "take photo of coffe", "Photography", staff[3], 2));
     tasks.add(new Task(2, eventRequests.get(2), "serve pastries", "Waitress", staff[5], 1));
     tasks.add(new Task(3, eventRequests.get(0), "take photo of grill", "Photography", staff[4], 0));
